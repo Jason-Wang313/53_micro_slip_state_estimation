@@ -1,0 +1,4 @@
+rows=600
+latent_policy_mse=0.01543
+threshold_policy_mse=0.02772
+avg_detector_activation=0.04500

@@ -1,0 +1,356 @@
+[2026-06-12T02:43:35] starting Crossref sweep
+[2026-06-12T02:43:35] query=micro slip tactile manipulation page=0 cumulative=99
+[2026-06-12T02:43:36] query=micro slip tactile manipulation page=1 cumulative=99
+[2026-06-12T02:43:37] query=micro slip tactile manipulation page=2 cumulative=99
+[2026-06-12T02:43:38] query=micro slip tactile manipulation page=3 cumulative=99
+[2026-06-12T02:43:39] query=micro slip tactile manipulation page=4 cumulative=99
+[2026-06-12T02:43:40] query=micro slip tactile manipulation page=5 cumulative=99
+[2026-06-12T02:43:41] query=slip state estimation robot manipulation page=0 cumulative=196
+[2026-06-12T02:43:42] query=slip state estimation robot manipulation page=1 cumulative=196
+[2026-06-12T02:43:44] query=slip state estimation robot manipulation page=2 cumulative=196
+[2026-06-12T02:43:45] query=slip state estimation robot manipulation page=3 cumulative=196
+[2026-06-12T02:43:46] query=slip state estimation robot manipulation page=4 cumulative=196
+[2026-06-12T02:43:47] query=slip state estimation robot manipulation page=5 cumulative=196
+[2026-06-12T02:43:48] query=contact state estimation dexterous manipulation page=0 cumulative=277
+[2026-06-12T02:43:50] query=contact state estimation dexterous manipulation page=1 cumulative=278
+[2026-06-12T02:43:51] query=contact state estimation dexterous manipulation page=2 cumulative=278
+[2026-06-12T02:43:52] query=contact state estimation dexterous manipulation page=3 cumulative=279
+[2026-06-12T02:43:53] query=contact state estimation dexterous manipulation page=4 cumulative=279
+[2026-06-12T02:43:54] query=contact state estimation dexterous manipulation page=5 cumulative=279
+[2026-06-12T02:43:55] query=tactile slip detection robotic grasp page=0 cumulative=363
+[2026-06-12T02:43:56] query=tactile slip detection robotic grasp page=1 cumulative=363
+[2026-06-12T02:43:56] query=tactile slip detection robotic grasp page=2 cumulative=363
+[2026-06-12T02:43:58] query=tactile slip detection robotic grasp page=3 cumulative=363
+[2026-06-12T02:43:59] query=tactile slip detection robotic grasp page=4 cumulative=363
+[2026-06-12T02:44:01] query=tactile slip detection robotic grasp page=5 cumulative=363
+[2026-06-12T02:44:02] query=contact rich manipulation state estimation page=0 cumulative=450
+[2026-06-12T02:44:04] query=contact rich manipulation state estimation page=1 cumulative=450
+[2026-06-12T02:44:05] query=contact rich manipulation state estimation page=2 cumulative=450
+[2026-06-12T02:44:06] query=contact rich manipulation state estimation page=3 cumulative=451
+[2026-06-12T02:44:07] query=contact rich manipulation state estimation page=4 cumulative=451
+[2026-06-12T02:44:08] query=contact rich manipulation state estimation page=5 cumulative=451
+[2026-06-12T02:44:09] query=force tactile proprioceptive manipulation page=0 cumulative=519
+[2026-06-12T02:44:09] query=force tactile proprioceptive manipulation page=1 cumulative=519
+[2026-06-12T02:44:10] query=force tactile proprioceptive manipulation page=2 cumulative=519
+[2026-06-12T02:44:11] query=force tactile proprioceptive manipulation page=3 cumulative=519
+[2026-06-12T02:44:12] query=force tactile proprioceptive manipulation page=4 cumulative=519
+[2026-06-12T02:44:13] query=force tactile proprioceptive manipulation page=5 cumulative=519
+[2026-06-12T02:44:14] query=object pose contact state estimation manipulation page=0 cumulative=607
+[2026-06-12T02:44:15] query=object pose contact state estimation manipulation page=1 cumulative=607
+[2026-06-12T02:44:16] query=object pose contact state estimation manipulation page=2 cumulative=607
+[2026-06-12T02:44:17] query=object pose contact state estimation manipulation page=3 cumulative=608
+[2026-06-12T02:44:18] query=object pose contact state estimation manipulation page=4 cumulative=608
+[2026-06-12T02:44:19] query=object pose contact state estimation manipulation page=5 cumulative=608
+[2026-06-12T02:44:20] query=latent state manipulation tactile sensing page=0 cumulative=669
+[2026-06-12T02:44:21] query=latent state manipulation tactile sensing page=1 cumulative=669
+[2026-06-12T02:44:23] query=latent state manipulation tactile sensing page=2 cumulative=669
+[2026-06-12T02:44:24] query=latent state manipulation tactile sensing page=3 cumulative=669
+[2026-06-12T02:44:25] query=latent state manipulation tactile sensing page=4 cumulative=669
+[2026-06-12T02:44:26] query=latent state manipulation tactile sensing page=5 cumulative=669
+[2026-06-12T02:44:27] query=slip detection grasp control robot page=0 cumulative=750
+[2026-06-12T02:44:28] query=slip detection grasp control robot page=1 cumulative=750
+[2026-06-12T02:44:30] query=slip detection grasp control robot page=2 cumulative=750
+[2026-06-12T02:44:32] query=slip detection grasp control robot page=3 cumulative=750
+[2026-06-12T02:44:33] query=slip detection grasp control robot page=4 cumulative=750
+[2026-06-12T02:44:34] query=slip detection grasp control robot page=5 cumulative=750
+[2026-06-12T02:44:34] query=micro slip dexterous manipulation page=0 cumulative=773
+[2026-06-12T02:44:35] query=micro slip dexterous manipulation page=1 cumulative=773
+[2026-06-12T02:44:36] query=micro slip dexterous manipulation page=2 cumulative=773
+[2026-06-12T02:44:37] query=micro slip dexterous manipulation page=3 cumulative=773
+[2026-06-12T02:44:38] query=micro slip dexterous manipulation page=4 cumulative=773
+[2026-06-12T02:44:39] query=micro slip dexterous manipulation page=5 cumulative=773
+[2026-06-12T02:44:39] query=robotic hand slip estimation tactile page=0 cumulative=834
+[2026-06-12T02:44:40] query=robotic hand slip estimation tactile page=1 cumulative=834
+[2026-06-12T02:44:42] query=robotic hand slip estimation tactile page=2 cumulative=834
+[2026-06-12T02:44:43] query=robotic hand slip estimation tactile page=3 cumulative=834
+[2026-06-12T02:44:44] query=robotic hand slip estimation tactile page=4 cumulative=834
+[2026-06-12T02:44:45] query=robotic hand slip estimation tactile page=5 cumulative=834
+[2026-06-12T02:44:47] query=manipulation contact dynamics estimation page=0 cumulative=908
+[2026-06-12T02:44:48] query=manipulation contact dynamics estimation page=1 cumulative=908
+[2026-06-12T02:44:50] query=manipulation contact dynamics estimation page=2 cumulative=908
+[2026-06-12T02:44:51] query=manipulation contact dynamics estimation page=3 cumulative=908
+[2026-06-12T02:44:53] query=manipulation contact dynamics estimation page=4 cumulative=908
+[2026-06-12T02:44:53] query=manipulation contact dynamics estimation page=5 cumulative=908
+[2026-06-12T02:44:54] wrote 908 rows to related_work_matrix.csv
+[2026-06-12T02:45:27] starting Crossref sweep
+[2026-06-12T02:45:27] query=micro slip tactile manipulation page=0 cumulative=99
+[2026-06-12T02:45:28] query=micro slip tactile manipulation page=1 cumulative=99
+[2026-06-12T02:45:29] query=micro slip tactile manipulation page=2 cumulative=99
+[2026-06-12T02:45:29] query=micro slip tactile manipulation page=3 cumulative=99
+[2026-06-12T02:45:30] query=micro slip tactile manipulation page=4 cumulative=99
+[2026-06-12T02:45:31] query=micro slip tactile manipulation page=5 cumulative=99
+[2026-06-12T02:45:32] query=micro slip tactile manipulation page=6 cumulative=99
+[2026-06-12T02:45:33] query=micro slip tactile manipulation page=7 cumulative=99
+[2026-06-12T02:45:34] query=micro slip tactile manipulation page=8 cumulative=99
+[2026-06-12T02:45:35] query=micro slip tactile manipulation page=9 cumulative=99
+[2026-06-12T02:45:36] query=slip state estimation robot manipulation page=0 cumulative=196
+[2026-06-12T02:45:37] query=slip state estimation robot manipulation page=1 cumulative=196
+[2026-06-12T02:45:38] query=slip state estimation robot manipulation page=2 cumulative=196
+[2026-06-12T02:45:39] query=slip state estimation robot manipulation page=3 cumulative=196
+[2026-06-12T02:45:40] query=slip state estimation robot manipulation page=4 cumulative=196
+[2026-06-12T02:45:41] query=slip state estimation robot manipulation page=5 cumulative=196
+[2026-06-12T02:45:42] query=slip state estimation robot manipulation page=6 cumulative=196
+[2026-06-12T02:45:43] query=slip state estimation robot manipulation page=7 cumulative=196
+[2026-06-12T02:45:43] query=slip state estimation robot manipulation page=8 cumulative=196
+[2026-06-12T02:45:45] query=slip state estimation robot manipulation page=9 cumulative=196
+[2026-06-12T02:45:46] query=contact state estimation dexterous manipulation page=0 cumulative=277
+[2026-06-12T02:45:47] query=contact state estimation dexterous manipulation page=1 cumulative=277
+[2026-06-12T02:45:48] query=contact state estimation dexterous manipulation page=2 cumulative=278
+[2026-06-12T02:45:49] query=contact state estimation dexterous manipulation page=3 cumulative=278
+[2026-06-12T02:45:50] query=contact state estimation dexterous manipulation page=4 cumulative=279
+[2026-06-12T02:45:51] query=contact state estimation dexterous manipulation page=5 cumulative=279
+[2026-06-12T02:45:53] query=contact state estimation dexterous manipulation page=6 cumulative=279
+[2026-06-12T02:45:54] query=contact state estimation dexterous manipulation page=7 cumulative=279
+[2026-06-12T02:45:55] query=contact state estimation dexterous manipulation page=8 cumulative=279
+[2026-06-12T02:45:57] query=contact state estimation dexterous manipulation page=9 cumulative=279
+[2026-06-12T02:45:57] query=tactile slip detection robotic grasp page=0 cumulative=363
+[2026-06-12T02:45:59] query=tactile slip detection robotic grasp page=1 cumulative=363
+[2026-06-12T02:46:00] query=tactile slip detection robotic grasp page=2 cumulative=363
+[2026-06-12T02:46:02] query=tactile slip detection robotic grasp page=3 cumulative=363
+[2026-06-12T02:46:03] query=tactile slip detection robotic grasp page=4 cumulative=363
+[2026-06-12T02:46:04] query=tactile slip detection robotic grasp page=5 cumulative=363
+[2026-06-12T02:46:06] query=tactile slip detection robotic grasp page=6 cumulative=363
+[2026-06-12T02:46:06] query=tactile slip detection robotic grasp page=7 cumulative=363
+[2026-06-12T02:46:07] query=tactile slip detection robotic grasp page=8 cumulative=363
+[2026-06-12T02:46:08] query=tactile slip detection robotic grasp page=9 cumulative=363
+[2026-06-12T02:46:09] query=contact rich manipulation state estimation page=0 cumulative=450
+[2026-06-12T02:46:10] query=contact rich manipulation state estimation page=1 cumulative=450
+[2026-06-12T02:46:11] query=contact rich manipulation state estimation page=2 cumulative=451
+[2026-06-12T02:46:12] query=contact rich manipulation state estimation page=3 cumulative=451
+[2026-06-12T02:46:13] query=contact rich manipulation state estimation page=4 cumulative=451
+[2026-06-12T02:46:14] query=contact rich manipulation state estimation page=5 cumulative=451
+[2026-06-12T02:46:17] query=contact rich manipulation state estimation page=6 cumulative=451
+[2026-06-12T02:46:18] query=contact rich manipulation state estimation page=7 cumulative=451
+[2026-06-12T02:46:19] query=contact rich manipulation state estimation page=8 cumulative=451
+[2026-06-12T02:46:20] query=contact rich manipulation state estimation page=9 cumulative=451
+[2026-06-12T02:46:21] query=force tactile proprioceptive manipulation page=0 cumulative=519
+[2026-06-12T02:46:22] query=force tactile proprioceptive manipulation page=1 cumulative=519
+[2026-06-12T02:46:23] query=force tactile proprioceptive manipulation page=2 cumulative=519
+[2026-06-12T02:46:24] query=force tactile proprioceptive manipulation page=3 cumulative=519
+[2026-06-12T02:46:25] query=force tactile proprioceptive manipulation page=4 cumulative=519
+[2026-06-12T02:46:26] query=force tactile proprioceptive manipulation page=5 cumulative=519
+[2026-06-12T02:46:27] query=force tactile proprioceptive manipulation page=6 cumulative=519
+[2026-06-12T02:46:28] query=force tactile proprioceptive manipulation page=7 cumulative=519
+[2026-06-12T02:46:29] query=force tactile proprioceptive manipulation page=8 cumulative=519
+[2026-06-12T02:46:30] query=force tactile proprioceptive manipulation page=9 cumulative=519
+[2026-06-12T02:46:30] query=object pose contact state estimation manipulation page=0 cumulative=607
+[2026-06-12T02:46:32] query=object pose contact state estimation manipulation page=1 cumulative=607
+[2026-06-12T02:46:33] query=object pose contact state estimation manipulation page=2 cumulative=607
+[2026-06-12T02:46:34] query=object pose contact state estimation manipulation page=3 cumulative=608
+[2026-06-12T02:46:34] query=object pose contact state estimation manipulation page=4 cumulative=608
+[2026-06-12T02:46:35] query=object pose contact state estimation manipulation page=5 cumulative=608
+[2026-06-12T02:46:36] query=object pose contact state estimation manipulation page=6 cumulative=608
+[2026-06-12T02:46:37] query=object pose contact state estimation manipulation page=7 cumulative=608
+[2026-06-12T02:46:38] query=object pose contact state estimation manipulation page=8 cumulative=608
+[2026-06-12T02:46:39] query=object pose contact state estimation manipulation page=9 cumulative=608
+[2026-06-12T02:46:40] query=latent state manipulation tactile sensing page=0 cumulative=669
+[2026-06-12T02:46:41] query=latent state manipulation tactile sensing page=1 cumulative=669
+[2026-06-12T02:46:43] query=latent state manipulation tactile sensing page=2 cumulative=669
+[2026-06-12T02:46:43] query=latent state manipulation tactile sensing page=3 cumulative=669
+[2026-06-12T02:46:44] query=latent state manipulation tactile sensing page=4 cumulative=669
+[2026-06-12T02:46:45] query=latent state manipulation tactile sensing page=5 cumulative=669
+[2026-06-12T02:46:45] query=latent state manipulation tactile sensing page=6 cumulative=669
+[2026-06-12T02:46:46] query=latent state manipulation tactile sensing page=7 cumulative=669
+[2026-06-12T02:46:47] query=latent state manipulation tactile sensing page=8 cumulative=669
+[2026-06-12T02:46:48] query=latent state manipulation tactile sensing page=9 cumulative=669
+[2026-06-12T02:46:50] query=slip detection grasp control robot page=0 cumulative=750
+[2026-06-12T02:46:51] query=slip detection grasp control robot page=1 cumulative=750
+[2026-06-12T02:46:51] query=slip detection grasp control robot page=2 cumulative=750
+[2026-06-12T02:46:52] query=slip detection grasp control robot page=3 cumulative=750
+[2026-06-12T02:46:53] query=slip detection grasp control robot page=4 cumulative=750
+[2026-06-12T02:46:54] query=slip detection grasp control robot page=5 cumulative=750
+[2026-06-12T02:46:54] query=slip detection grasp control robot page=6 cumulative=750
+[2026-06-12T02:46:55] query=slip detection grasp control robot page=7 cumulative=750
+[2026-06-12T02:46:56] query=slip detection grasp control robot page=8 cumulative=750
+[2026-06-12T02:46:57] query=slip detection grasp control robot page=9 cumulative=750
+[2026-06-12T02:46:58] query=micro slip dexterous manipulation page=0 cumulative=773
+[2026-06-12T02:46:59] query=micro slip dexterous manipulation page=1 cumulative=773
+[2026-06-12T02:47:00] query=micro slip dexterous manipulation page=2 cumulative=773
+[2026-06-12T02:47:02] query=micro slip dexterous manipulation page=3 cumulative=773
+[2026-06-12T02:47:02] query=micro slip dexterous manipulation page=4 cumulative=773
+[2026-06-12T02:47:04] query=micro slip dexterous manipulation page=5 cumulative=773
+[2026-06-12T02:47:04] query=micro slip dexterous manipulation page=6 cumulative=773
+[2026-06-12T02:47:05] query=micro slip dexterous manipulation page=7 cumulative=773
+[2026-06-12T02:47:06] query=micro slip dexterous manipulation page=8 cumulative=773
+[2026-06-12T02:47:07] query=micro slip dexterous manipulation page=9 cumulative=773
+[2026-06-12T02:47:08] query=robotic hand slip estimation tactile page=0 cumulative=834
+[2026-06-12T02:47:09] query=robotic hand slip estimation tactile page=1 cumulative=834
+[2026-06-12T02:47:11] query=robotic hand slip estimation tactile page=2 cumulative=834
+[2026-06-12T02:47:11] query=robotic hand slip estimation tactile page=3 cumulative=834
+[2026-06-12T02:47:12] query=robotic hand slip estimation tactile page=4 cumulative=834
+[2026-06-12T02:47:14] query=robotic hand slip estimation tactile page=5 cumulative=834
+[2026-06-12T02:47:14] query=robotic hand slip estimation tactile page=6 cumulative=834
+[2026-06-12T02:47:16] query=robotic hand slip estimation tactile page=7 cumulative=834
+[2026-06-12T02:47:17] query=robotic hand slip estimation tactile page=8 cumulative=834
+[2026-06-12T02:47:18] query=robotic hand slip estimation tactile page=9 cumulative=834
+[2026-06-12T02:47:19] query=manipulation contact dynamics estimation page=0 cumulative=908
+[2026-06-12T02:47:19] query=manipulation contact dynamics estimation page=1 cumulative=908
+[2026-06-12T02:47:20] query=manipulation contact dynamics estimation page=2 cumulative=908
+[2026-06-12T02:47:21] query=manipulation contact dynamics estimation page=3 cumulative=908
+[2026-06-12T02:47:22] query=manipulation contact dynamics estimation page=4 cumulative=908
+[2026-06-12T02:47:23] query=manipulation contact dynamics estimation page=5 cumulative=908
+[2026-06-12T02:47:24] query=manipulation contact dynamics estimation page=6 cumulative=908
+[2026-06-12T02:47:25] query=manipulation contact dynamics estimation page=7 cumulative=908
+[2026-06-12T02:47:26] query=manipulation contact dynamics estimation page=8 cumulative=908
+[2026-06-12T02:47:27] query=manipulation contact dynamics estimation page=9 cumulative=908
+[2026-06-12T02:47:29] query=robot grasp tactile sensing page=0 cumulative=991
+[2026-06-12T02:47:30] query=robot grasp tactile sensing page=1 cumulative=991
+[2026-06-12T02:47:31] query=robot grasp tactile sensing page=2 cumulative=991
+[2026-06-12T02:47:32] query=robot grasp tactile sensing page=3 cumulative=991
+[2026-06-12T02:47:34] query=robot grasp tactile sensing page=4 cumulative=991
+[2026-06-12T02:47:35] query=robot grasp tactile sensing page=5 cumulative=991
+[2026-06-12T02:47:36] query=robot grasp tactile sensing page=6 cumulative=991
+[2026-06-12T02:47:37] query=robot grasp tactile sensing page=7 cumulative=991
+[2026-06-12T02:47:38] query=robot grasp tactile sensing page=8 cumulative=991
+[2026-06-12T02:47:39] query=robot grasp tactile sensing page=9 cumulative=991
+[2026-06-12T02:47:39] query=robot tactile feedback manipulation page=0 cumulative=1066
+[2026-06-12T02:47:40] query=robot tactile feedback manipulation page=1 cumulative=1066
+[2026-06-12T02:47:41] query=robot tactile feedback manipulation page=2 cumulative=1066
+[2026-06-12T02:47:42] query=robot tactile feedback manipulation page=3 cumulative=1066
+[2026-06-12T02:47:43] query=robot tactile feedback manipulation page=4 cumulative=1066
+[2026-06-12T02:47:44] query=robot tactile feedback manipulation page=5 cumulative=1066
+[2026-06-12T02:47:45] query=robot tactile feedback manipulation page=6 cumulative=1066
+[2026-06-12T02:47:47] query=robot tactile feedback manipulation page=7 cumulative=1066
+[2026-06-12T02:47:48] query=robot tactile feedback manipulation page=8 cumulative=1066
+[2026-06-12T02:47:48] query failed: robot tactile feedback manipulation page=9 err=429 Client Error: Too Many Requests for url: https://api.crossref.org/works?query.bibliographic=robot+tactile+feedback+manipulation&rows=100&select=DOI%2Ctitle%2Cauthor%2Ccontainer-title%2Cissued%2CURL%2Ctype
+[2026-06-12T02:47:50] query=force control contact estimation robot page=0 cumulative=1162
+[2026-06-12T02:47:52] query=force control contact estimation robot page=1 cumulative=1163
+[2026-06-12T02:47:54] query=force control contact estimation robot page=2 cumulative=1163
+[2026-06-12T02:47:56] query=force control contact estimation robot page=3 cumulative=1163
+[2026-06-12T02:47:58] query=force control contact estimation robot page=4 cumulative=1164
+[2026-06-12T02:48:00] query=force control contact estimation robot page=5 cumulative=1164
+[2026-06-12T02:48:01] query=force control contact estimation robot page=6 cumulative=1164
+[2026-06-12T02:48:03] query=force control contact estimation robot page=7 cumulative=1164
+[2026-06-12T02:48:06] query=force control contact estimation robot page=8 cumulative=1164
+[2026-06-12T02:48:07] query=force control contact estimation robot page=9 cumulative=1164
+[2026-06-12T02:48:09] query=dexterous grasp pose estimation page=0 cumulative=1249
+[2026-06-12T02:48:10] query=dexterous grasp pose estimation page=1 cumulative=1249
+[2026-06-12T02:48:12] query=dexterous grasp pose estimation page=2 cumulative=1249
+[2026-06-12T02:48:13] query=dexterous grasp pose estimation page=3 cumulative=1249
+[2026-06-12T02:48:15] query=dexterous grasp pose estimation page=4 cumulative=1249
+[2026-06-12T02:48:17] query=dexterous grasp pose estimation page=5 cumulative=1249
+[2026-06-12T02:48:19] query=dexterous grasp pose estimation page=6 cumulative=1249
+[2026-06-12T02:48:21] query=dexterous grasp pose estimation page=7 cumulative=1249
+[2026-06-12T02:48:23] query=dexterous grasp pose estimation page=8 cumulative=1249
+[2026-06-12T02:48:25] query=dexterous grasp pose estimation page=9 cumulative=1249
+[2026-06-12T02:48:28] query=in-hand manipulation object pose estimation page=0 cumulative=1295
+[2026-06-12T02:48:30] query=in-hand manipulation object pose estimation page=1 cumulative=1295
+[2026-06-12T02:48:31] query=in-hand manipulation object pose estimation page=2 cumulative=1295
+[2026-06-12T02:48:32] query=in-hand manipulation object pose estimation page=3 cumulative=1295
+[2026-06-12T02:48:34] query=in-hand manipulation object pose estimation page=4 cumulative=1295
+[2026-06-12T02:48:35] query=in-hand manipulation object pose estimation page=5 cumulative=1295
+[2026-06-12T02:48:36] query=in-hand manipulation object pose estimation page=6 cumulative=1295
+[2026-06-12T02:48:37] query=in-hand manipulation object pose estimation page=7 cumulative=1295
+[2026-06-12T02:48:38] query=in-hand manipulation object pose estimation page=8 cumulative=1295
+[2026-06-12T02:48:39] query=in-hand manipulation object pose estimation page=9 cumulative=1295
+[2026-06-12T02:48:40] query=robot compliance estimation contact page=0 cumulative=1376
+[2026-06-12T02:48:41] query=robot compliance estimation contact page=1 cumulative=1376
+[2026-06-12T02:48:42] query=robot compliance estimation contact page=2 cumulative=1376
+[2026-06-12T02:48:43] query=robot compliance estimation contact page=3 cumulative=1377
+[2026-06-12T02:48:45] query=robot compliance estimation contact page=4 cumulative=1377
+[2026-06-12T02:48:45] query=robot compliance estimation contact page=5 cumulative=1377
+[2026-06-12T02:48:46] query=robot compliance estimation contact page=6 cumulative=1377
+[2026-06-12T02:48:48] query=robot compliance estimation contact page=7 cumulative=1377
+[2026-06-12T02:48:49] query=robot compliance estimation contact page=8 cumulative=1377
+[2026-06-12T02:48:50] query=robot compliance estimation contact page=9 cumulative=1377
+[2026-06-12T02:48:51] query=friction estimation tactile robotics page=0 cumulative=1463
+[2026-06-12T02:48:53] query=friction estimation tactile robotics page=1 cumulative=1463
+[2026-06-12T02:48:55] query=friction estimation tactile robotics page=2 cumulative=1463
+[2026-06-12T02:48:57] query=friction estimation tactile robotics page=3 cumulative=1463
+[2026-06-12T02:48:58] query=friction estimation tactile robotics page=4 cumulative=1463
+[2026-06-12T02:48:59] query=friction estimation tactile robotics page=5 cumulative=1463
+[2026-06-12T02:49:00] query=friction estimation tactile robotics page=6 cumulative=1463
+[2026-06-12T02:49:03] query=friction estimation tactile robotics page=7 cumulative=1463
+[2026-06-12T02:49:04] query=friction estimation tactile robotics page=8 cumulative=1463
+[2026-06-12T02:49:05] query=friction estimation tactile robotics page=9 cumulative=1463
+[2026-06-12T02:49:06] query=haptic sensing manipulation robot page=0 cumulative=1551
+[2026-06-12T02:49:08] query=haptic sensing manipulation robot page=1 cumulative=1551
+[2026-06-12T02:49:09] query=haptic sensing manipulation robot page=2 cumulative=1551
+[2026-06-12T02:49:10] query=haptic sensing manipulation robot page=3 cumulative=1551
+[2026-06-12T02:49:11] query=haptic sensing manipulation robot page=4 cumulative=1551
+[2026-06-12T02:49:12] query=haptic sensing manipulation robot page=5 cumulative=1551
+[2026-06-12T02:49:13] query=haptic sensing manipulation robot page=6 cumulative=1551
+[2026-06-12T02:49:14] query=haptic sensing manipulation robot page=7 cumulative=1551
+[2026-06-12T02:49:16] query=haptic sensing manipulation robot page=8 cumulative=1551
+[2026-06-12T02:49:17] query=haptic sensing manipulation robot page=9 cumulative=1551
+[2026-06-12T02:49:18] query=proprioceptive tactile sensing robot hand page=0 cumulative=1606
+[2026-06-12T02:49:20] query=proprioceptive tactile sensing robot hand page=1 cumulative=1606
+[2026-06-12T02:49:21] query=proprioceptive tactile sensing robot hand page=2 cumulative=1606
+[2026-06-12T02:49:22] query=proprioceptive tactile sensing robot hand page=3 cumulative=1606
+[2026-06-12T02:49:23] query=proprioceptive tactile sensing robot hand page=4 cumulative=1606
+[2026-06-12T02:49:24] query=proprioceptive tactile sensing robot hand page=5 cumulative=1606
+[2026-06-12T02:49:25] query=proprioceptive tactile sensing robot hand page=6 cumulative=1606
+[2026-06-12T02:49:26] query=proprioceptive tactile sensing robot hand page=7 cumulative=1606
+[2026-06-12T02:49:28] query=proprioceptive tactile sensing robot hand page=8 cumulative=1606
+[2026-06-12T02:49:28] query=proprioceptive tactile sensing robot hand page=9 cumulative=1606
+[2026-06-12T02:49:30] query=contact-rich manipulation robotics page=0 cumulative=1645
+[2026-06-12T02:49:31] query=contact-rich manipulation robotics page=1 cumulative=1645
+[2026-06-12T02:49:33] query=contact-rich manipulation robotics page=2 cumulative=1645
+[2026-06-12T02:49:34] query=contact-rich manipulation robotics page=3 cumulative=1645
+[2026-06-12T02:49:35] query=contact-rich manipulation robotics page=4 cumulative=1645
+[2026-06-12T02:49:36] query=contact-rich manipulation robotics page=5 cumulative=1645
+[2026-06-12T02:49:37] query=contact-rich manipulation robotics page=6 cumulative=1645
+[2026-06-12T02:49:38] query=contact-rich manipulation robotics page=7 cumulative=1645
+[2026-06-12T02:49:39] query=contact-rich manipulation robotics page=8 cumulative=1645
+[2026-06-12T02:49:40] query=contact-rich manipulation robotics page=9 cumulative=1645
+[2026-06-12T02:49:42] query=robot hand object pose force sensing page=0 cumulative=1712
+[2026-06-12T02:49:42] query=robot hand object pose force sensing page=1 cumulative=1712
+[2026-06-12T02:49:44] query=robot hand object pose force sensing page=2 cumulative=1712
+[2026-06-12T02:49:45] query=robot hand object pose force sensing page=3 cumulative=1712
+[2026-06-12T02:49:45] query=robot hand object pose force sensing page=4 cumulative=1712
+[2026-06-12T02:49:47] query=robot hand object pose force sensing page=5 cumulative=1712
+[2026-06-12T02:49:48] query=robot hand object pose force sensing page=6 cumulative=1712
+[2026-06-12T02:49:49] query=robot hand object pose force sensing page=7 cumulative=1712
+[2026-06-12T02:49:50] query=robot hand object pose force sensing page=8 cumulative=1712
+[2026-06-12T02:49:51] query=robot hand object pose force sensing page=9 cumulative=1712
+[2026-06-12T02:49:51] query=tactile object recognition manipulation page=0 cumulative=1787
+[2026-06-12T02:49:52] query=tactile object recognition manipulation page=1 cumulative=1788
+[2026-06-12T02:49:53] query=tactile object recognition manipulation page=2 cumulative=1788
+[2026-06-12T02:49:54] query=tactile object recognition manipulation page=3 cumulative=1788
+[2026-06-12T02:49:55] query=tactile object recognition manipulation page=4 cumulative=1788
+[2026-06-12T02:49:55] query=tactile object recognition manipulation page=5 cumulative=1788
+[2026-06-12T02:49:56] query=tactile object recognition manipulation page=6 cumulative=1788
+[2026-06-12T02:49:57] query=tactile object recognition manipulation page=7 cumulative=1788
+[2026-06-12T02:49:58] query=tactile object recognition manipulation page=8 cumulative=1788
+[2026-06-12T02:49:59] query=tactile object recognition manipulation page=9 cumulative=1788
+[2026-06-12T02:50:00] query=slip prediction robotic grasping page=0 cumulative=1872
+[2026-06-12T02:50:02] query=slip prediction robotic grasping page=1 cumulative=1873
+[2026-06-12T02:50:04] query=slip prediction robotic grasping page=2 cumulative=1873
+[2026-06-12T02:50:06] query=slip prediction robotic grasping page=3 cumulative=1873
+[2026-06-12T02:50:07] query=slip prediction robotic grasping page=4 cumulative=1873
+[2026-06-12T02:50:08] query=slip prediction robotic grasping page=5 cumulative=1873
+[2026-06-12T02:50:09] query=slip prediction robotic grasping page=6 cumulative=1873
+[2026-06-12T02:50:10] query=slip prediction robotic grasping page=7 cumulative=1873
+[2026-06-12T02:50:12] query=slip prediction robotic grasping page=8 cumulative=1873
+[2026-06-12T02:50:13] query=slip prediction robotic grasping page=9 cumulative=1873
+[2026-06-12T02:50:14] query=contact mechanics robotics manipulation page=0 cumulative=1917
+[2026-06-12T02:50:15] query=contact mechanics robotics manipulation page=1 cumulative=1917
+[2026-06-12T02:50:19] query=contact mechanics robotics manipulation page=2 cumulative=1917
+[2026-06-12T02:50:20] query=contact mechanics robotics manipulation page=3 cumulative=1917
+[2026-06-12T02:50:22] query=contact mechanics robotics manipulation page=4 cumulative=1917
+[2026-06-12T02:50:24] query=contact mechanics robotics manipulation page=5 cumulative=1917
+[2026-06-12T02:50:26] query=contact mechanics robotics manipulation page=6 cumulative=1917
+[2026-06-12T02:50:30] query=contact mechanics robotics manipulation page=7 cumulative=1917
+[2026-06-12T02:50:32] query=contact mechanics robotics manipulation page=8 cumulative=1917
+[2026-06-12T02:50:34] query=contact mechanics robotics manipulation page=9 cumulative=1917
+[2026-06-12T02:50:35] query=force estimation robot hand page=0 cumulative=1974
+[2026-06-12T02:50:38] query=force estimation robot hand page=1 cumulative=1974
+[2026-06-12T02:50:40] query=force estimation robot hand page=2 cumulative=1974
+[2026-06-12T02:50:42] query=force estimation robot hand page=3 cumulative=1974
+[2026-06-12T02:50:44] query=force estimation robot hand page=4 cumulative=1974
+[2026-06-12T02:50:47] query=force estimation robot hand page=5 cumulative=1974
+[2026-06-12T02:50:49] query=force estimation robot hand page=6 cumulative=1974
+[2026-06-12T02:50:50] query=force estimation robot hand page=7 cumulative=1974
+[2026-06-12T02:50:53] query=force estimation robot hand page=8 cumulative=1974
+[2026-06-12T02:50:54] query=force estimation robot hand page=9 cumulative=1974
+[2026-06-12T02:50:55] query=tactile servoing grasping page=0 cumulative=2057
+[2026-06-12T02:50:57] query=tactile servoing grasping page=1 cumulative=2058
+[2026-06-12T02:50:59] query=tactile servoing grasping page=2 cumulative=2058
+[2026-06-12T02:51:00] query=tactile servoing grasping page=3 cumulative=2058
+[2026-06-12T02:51:03] query=tactile servoing grasping page=4 cumulative=2058
+[2026-06-12T02:51:04] query=tactile servoing grasping page=5 cumulative=2058
+[2026-06-12T02:51:06] query=tactile servoing grasping page=6 cumulative=2058
+[2026-06-12T02:51:08] query=tactile servoing grasping page=7 cumulative=2058
+[2026-06-12T02:51:09] query=tactile servoing grasping page=8 cumulative=2058
+[2026-06-12T02:51:10] query=tactile servoing grasping page=9 cumulative=2058
+[2026-06-12T02:51:11] wrote 2058 rows to related_work_matrix.csv
