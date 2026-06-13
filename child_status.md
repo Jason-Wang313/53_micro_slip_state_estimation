@@ -1,34 +1,23 @@
 # Child Status 53
 
-Status: launching literature pipeline
-Attempt: 2
-Stage: repo inventory and plan reset complete
-Current focus: landscape sweep + artifact generation
-Last update: 2026-06-12 02:58:00 +01:00
-Exact commands run:
-- `Get-ChildItem -Force`
-- `Get-ChildItem -Force ..`
-- `Get-Content plan.md`
-- `Get-Content child_status.md`
-Notes:
-- Existing skeleton files were preserved and updated in place.
-- Next step is to inspect available scripts/templates and build the literature sweep pipeline.
-Failures:
-- None yet.
-Recovery:
-- N/A
+Status: kill_archive
+Attempt: 3
+Stage: v2_submission_hardening
 
-Exit code: 999
-End time: 2026-06-12 03:00:04 +01:00
-PDF exists: False
+Current facts:
+- Original diagnostic has 600 rows from one synthetic run.
+- Original latent policy MSE is 0.01543.
+- Original fixed threshold policy MSE is 0.02772.
+- V2 tuned matched-generator EMA tactile MSE is 0.00021, beating the latent filter at 0.01453.
+- V2 tactile-bias-shift constant-hold MSE is 0.00058, beating the latent filter at 0.06434.
+- V2 friction-confound constant-hold MSE is 0.00058, beating the latent filter at 0.05102.
+- The central synthetic evidence collapses under tuned baselines and near-constant control.
+- Canonical PDF target: `C:/Users/wangz/Downloads/53.pdf`.
+- Canonical PDF size: 318263 bytes.
+- Local generated `paper/main.pdf` is removed after build.
+- Desktop PDF copy is absent.
 
-Manual recovery:
-- Fixed natbib bibliography labels in paper/main.tex.
-- Rebuilt paper/main.pdf successfully.
-Exit code: 0
-End time: 2026-06-12 03:03:44 +01:00
-PDF exists: True
-Downloads PDF: C:/Users/wangz/Downloads/53.pdf
-Desktop PDF: C:/Users/wangz/OneDrive/Desktop/53.pdf
-GitHub URL: https://github.com/Jason-Wang313/53_micro_slip_state_estimation
+Decision:
+- Kill/archive. The concept may be useful, but this repo does not contain submission-grade evidence for a micro-slip latent-state estimator.
 
+End time: 2026-06-13 12:30:15 +01:00

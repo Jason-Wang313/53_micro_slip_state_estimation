@@ -1,17 +1,23 @@
 # Novelty Boundary Map
 
-- Not novel: generic slip detection, friction estimation, tactile grasp stabilization, and binary incipient-slip classification.
-- Borderline: multimodal slip detection if the tactile channel is merely fused rather than made central.
-- Stronger boundary: estimate micro-slip as a latent state that the controller can regulate directly.
-- Strongest mechanism shift: treat micro-slip as a continuous contact-state variable with temporal persistence, not a threshold event.
+## Not Novel
 
-## Rejected Directions
-- Bigger model.
-- More data.
-- New benchmark only.
-- Uncertainty as the main contribution.
-- Active learning as the main contribution.
-- LLM planner or RL controller.
+- Generic slip detection.
+- Friction estimation.
+- Tactile grasp stabilization.
+- Binary incipient-slip classification.
+- Smoothing tactile signals before control.
 
-## Proposed Direction
-- Build a micro-slip state estimator that exposes a control-friendly latent variable and demonstrate that it improves stabilization over threshold slip detectors.
+## Collapsed Claim
+
+The current synthetic experiment does not show that a latent micro-slip estimator is necessary. Tuned tactile smoothing and constant hold beat the proposed filter.
+
+## Surviving Direction
+
+Micro-slip state estimation may be worth revisiting if future experiments show:
+
+- real contact-state labels or control outcomes,
+- object and calibration holdouts,
+- nontrivial control targets,
+- tuned continuous tactile baselines,
+- estimator failures and uncertainty.
