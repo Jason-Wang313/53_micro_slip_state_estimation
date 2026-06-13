@@ -1,0 +1,14 @@
+{
+  "paper": 53,
+  "decision": "kill/archive",
+  "canonical_pdf": "C:/Users/wangz/Downloads/53.pdf",
+  "key_result": "The latent filter loses to tuned constant, threshold, raw tactile, and EMA tactile baselines; matched-generator latent MSE is 0.01453 versus EMA tactile 0.00021.",
+  "v2_metrics": {
+    "matched_latent_filter_mse": 0.014533849313268168,
+    "matched_ema_tactile_mse": 0.0002127549741055893,
+    "bias_shift_latent_filter_mse": 0.0643350644467786,
+    "bias_shift_constant_hold_mse": 0.0005760030736931829,
+    "friction_confound_latent_filter_mse": 0.05101683801981229,
+    "friction_confound_constant_hold_mse": 0.0005760030736931829
+  }
+}

@@ -1,15 +1,38 @@
 # Final Audit
 
-1. chosen thesis: micro-slip should be estimated as a continuous control-relevant latent state, not merely detected as a binary slip event.
-2. field assumption broken: slip/no-slip thresholds are sufficient for dexterous manipulation stabilization.
-3. new central mechanism: a temporally persistent latent micro-slip estimate consumed directly by a stabilizing controller.
-4. genuine novelty: reframes incipient slip from event detection to state estimation for control.
-5. closest hostile prior work: tactile slip detection, friction estimation, grasp stabilization, in-hand pose estimation, and contact-state inference papers in the 2,058-row sweep.
-6. literature coverage: 2,058-entry sweep; 100-paper hostile prior set in docs/hostile_prior_work.md.
-7. proof/formal-claim status if any: no theorem; empirical mechanism claim supported by a controlled synthetic diagnostic.
-8. strongest evidence: diagnostic rows=600; latent policy MSE=0.01543 versus threshold policy MSE=0.02772.
-9. biggest weaknesses: synthetic-only evidence and no real tactile grasp logs yet.
-10. paper-readiness judgment: recovered mechanism paper; revise before archival submission.
-11. exact Downloads PDF path: C:/Users/wangz/Downloads/53.pdf.
-12. GitHub URL: https://github.com/Jason-Wang313/53_micro_slip_state_estimation.
-13. whether the PDF was copied to the visible Desktop by the orchestrator: yes; copied to C:/Users/wangz/OneDrive/Desktop/53.pdf.
+Paper-readiness judgment: kill/archive.
+
+## Original Thesis
+
+Micro-slip should be estimated as a continuous control-relevant latent state rather than only detected as a binary slip event.
+
+## Hardest Reviewer Attack
+
+The synthetic target action is nearly solved by constant or lightly calibrated tactile control. The manuscript compares the latent filter to a weak fixed threshold that overreacts by construction.
+
+## V2 Stress Evidence
+
+- Matched generator: latent filter MSE 0.01453; tuned EMA tactile MSE 0.00021.
+- Matched generator: tuned threshold MSE 0.00040, far below the original fixed-threshold MSE 0.02772.
+- Low tactile gain: latent filter MSE 0.01240; tuned EMA tactile MSE 0.00034.
+- Tactile bias shift: latent filter MSE 0.06434; constant hold MSE 0.00058.
+- Friction confound: latent filter MSE 0.05102; constant hold MSE 0.00058.
+- Noisy tactile: latent filter MSE 0.01789; tuned EMA tactile MSE 0.00036.
+
+## Decision
+
+Kill/archive. The core synthetic result collapses under tuned baselines. The repo should not be submitted as a positive micro-slip estimator paper.
+
+## Recovery Requirements
+
+- Real tactile or proprioceptive grasp logs.
+- A control target not nearly solved by constant hold.
+- Tuned threshold, raw tactile, EMA tactile, friction proxy, and simple state-estimator baselines.
+- Calibration-shift and object-family holdout tests.
+- Multiple seeds, uncertainty, and failure-case reporting.
+
+## Artifact Policy
+
+- Canonical PDF: `C:/Users/wangz/Downloads/53.pdf`
+- Local tracked/generated PDF policy: `paper/main.pdf` is ignored and removed after build.
+- Desktop copy: absent.

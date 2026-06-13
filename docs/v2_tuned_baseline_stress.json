@@ -1,0 +1,80 @@
+{
+  "decision": "kill/archive",
+  "reason": "The original latent-filter result collapses against tuned constant, threshold, and tactile-smoothing baselines.",
+  "training": {
+    "seeds": [
+      100,
+      101,
+      102,
+      103,
+      104,
+      105,
+      106,
+      107
+    ],
+    "constant_action": 0.6499783410887591,
+    "threshold": 0.40148825625420037,
+    "threshold_gain": 0.06,
+    "raw_tactile_linear": [
+      0.6285014204053093,
+      0.09625290583694077
+    ],
+    "ema_beta": 0.85,
+    "ema_tactile_linear": [
+      0.6042592915947107,
+      0.2050650257178451
+    ]
+  },
+  "results": [
+    {
+      "scenario": "matched_generator",
+      "latent_filter_mse": 0.014533849313268168,
+      "constant_hold_mse": 0.0005760030736931829,
+      "tuned_threshold_mse": 0.00040100043001295216,
+      "raw_tactile_linear_mse": 0.0003939725328004862,
+      "ema_tactile_linear_mse": 0.0002127549741055893,
+      "best_baseline": "ema_tactile_linear_mse",
+      "latent_filter_minus_best": 0.01432109433916258
+    },
+    {
+      "scenario": "low_tactile_gain",
+      "latent_filter_mse": 0.01240206323219138,
+      "constant_hold_mse": 0.0005760030736931829,
+      "tuned_threshold_mse": 0.0005767625114933098,
+      "raw_tactile_linear_mse": 0.0005126078660304072,
+      "ema_tactile_linear_mse": 0.0003360027841623123,
+      "best_baseline": "ema_tactile_linear_mse",
+      "latent_filter_minus_best": 0.012066060448029069
+    },
+    {
+      "scenario": "tactile_bias_shift",
+      "latent_filter_mse": 0.0643350644467786,
+      "constant_hold_mse": 0.0005760030736931829,
+      "tuned_threshold_mse": 0.0019835827112621067,
+      "raw_tactile_linear_mse": 0.000986152813392303,
+      "ema_tactile_linear_mse": 0.0028455134093762317,
+      "best_baseline": "constant_hold_mse",
+      "latent_filter_minus_best": 0.06375906137308542
+    },
+    {
+      "scenario": "friction_confound",
+      "latent_filter_mse": 0.05101683801981229,
+      "constant_hold_mse": 0.0005760030736931829,
+      "tuned_threshold_mse": 0.0013730670021577522,
+      "raw_tactile_linear_mse": 0.0007284461795560915,
+      "ema_tactile_linear_mse": 0.0018726994289375958,
+      "best_baseline": "constant_hold_mse",
+      "latent_filter_minus_best": 0.05044083494611911
+    },
+    {
+      "scenario": "noisy_tactile",
+      "latent_filter_mse": 0.017886829516014804,
+      "constant_hold_mse": 0.0005760030736931829,
+      "tuned_threshold_mse": 0.0008830955644247173,
+      "raw_tactile_linear_mse": 0.0007998231486437643,
+      "ema_tactile_linear_mse": 0.00036131280589232496,
+      "best_baseline": "ema_tactile_linear_mse",
+      "latent_filter_minus_best": 0.01752551671012248
+    }
+  ]
+}

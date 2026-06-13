@@ -11,17 +11,18 @@
 \usepackage{array}
 \usepackage{enumitem}
 
-\title{Micro Slip State Estimation:\\Why Dexterous Manipulation Needs a Control-Relevant Latent State}
+\title{Micro Slip State Estimation:\\A Tuned-Baseline Failure Case}
 
 \author{Anonymous Authors}
 
 \newcommand{\method}{\textsc{MicroSlipLatent}}
+\raggedbottom
 
 \begin{document}
 \maketitle
 
 \begin{abstract}
-Most robot slip work treats slip as a binary event, a friction proxy, or a control trigger that fires after instability has already become visible. We argue that micro-slip is the wrong object to collapse into a threshold: the useful state for dexterous manipulation is continuous, temporally persistent, and directly relevant to stabilization control. We support that thesis with a 2,058-paper literature sweep, a 100-paper hostile prior set, and a synthetic diagnostic in which a latent-slip estimator reduces control mean-squared error from 0.02772 for a binary detector to 0.01543. The contribution is not a larger model or a new benchmark. It is a mechanism shift: micro-slip should be estimated as a control-relevant latent state.
+Most robot slip work treats slip as a binary event, a friction proxy, or a control trigger that fires after instability has already become visible. We ask whether micro-slip should instead be represented as a continuous, temporally persistent control state. The original synthetic diagnostic appeared to support that thesis: a latent-slip estimator reduced control mean-squared error from 0.02772 for a fixed binary detector to 0.01543. Submission hardening overturns that evidence. A tuned EMA tactile controller reaches 0.00021 MSE on the matched generator, and a constant-hold controller reaches 0.00058 under tactile bias and friction-confounding shifts while the latent filter rises to 0.06434 and 0.05102. The result is therefore a negative finding: the current paper should be archived until the claim is tested on real tactile logs or a diagnostic where constant and tuned tactile baselines do not explain the effect.
 \end{abstract}
 
 \section{Introduction}
@@ -34,6 +35,9 @@ Micro-slip should be estimated as a latent state, not only detected as a binary 
 \end{quote}
 
 The distinction matters because a controller needs to know how far the system has moved toward instability, not just whether a threshold has been crossed. A binary detector can be late, discontinuous, and over-reactive. A latent state can be smooth enough to support graded force correction.
+
+\paragraph{Submission-hardening note.}
+Submission-hardening version: v2. Decision: kill/archive. The v2 stress test adds tuned constant, threshold, raw-tactile, and EMA-tactile baselines. These baselines dominate the proposed latent filter in the synthetic diagnostic, so the original evidence should not be used as a submission claim.
 
 \section{Related Work and Novelty Boundary}
 
@@ -63,7 +67,7 @@ The policies are:
     \item a latent-state policy that filters the tactile observation into a continuous slip estimate.
 \end{itemize}
 
-The target action is proportional to the true latent state. We then measure the squared action error as a simple control proxy.
+The target action is proportional to the true latent state. We then measure the squared action error as a simple control proxy. This design is also the central weakness: it does not prove that the filter recovers a physically meaningful micro-slip state, only that an estimator can reduce error against a synthetic target.
 
 \begin{table}[t]
 \centering
@@ -77,6 +81,14 @@ Latent-state estimator & 0.01543 & 1.00$\times$ \\
 Threshold detector & 0.02772 & 1.80$\times$ \\
 \bottomrule
 \end{tabular}
+\end{table}
+
+\begin{table}[t]
+\centering
+\small
+\input{v2_tuned_baseline_table.tex}
+\caption{V2 tuned-baseline stress. The latent filter loses to simple calibrated controllers, including constant hold under bias and friction confounding.}
+\label{tab:v2-baselines}
 \end{table}
 
 \begin{figure}[t]
@@ -98,13 +110,15 @@ That distinction changes the mechanism:
     \item the failure mode is lag and overshoot, not only false positives and false negatives.
 \end{itemize}
 
+However, Table~\ref{tab:v2-baselines} shows that the current experiment does not establish this stronger claim. A tuned binary threshold already drops from the manuscript's fixed-detector MSE of 0.02772 to 0.00040 on the matched generator, and a tuned EMA tactile controller reaches 0.00021. Under tactile bias shift and friction confounding, constant hold reaches 0.00058 while the latent filter degrades to 0.06434 and 0.05102. The synthetic target is too close to a near-constant control action, and the proposed filter is not robust to observation bias.
+
 \section{Limitations}
 
-The evidence here is synthetic. We do not claim that the synthetic generator proves universal robot behavior, only that the mechanism difference is testable and can matter even in a minimal setting. A full paper would need real tactile or proprioceptive grasp experiments under friction drift, object compliance, and unseen geometries.
+The evidence here is synthetic and fails under tuned baseline hardening. The paper should not claim a working micro-slip state estimator, an algorithmic advantage, or evidence for deployment. A recoverable version would need real tactile or proprioceptive grasp logs, a target that is not nearly solved by constant hold, calibration-shift tests, and tuned continuous tactile baselines before any positive submission claim.
 
 \section{Conclusion}
 
-Micro-slip is better treated as a latent control state than as a thresholded event. Existing slip, friction, and tactile-control literature makes the field rich, but it also reveals the gap: the central variable has not been made explicit enough for control. That is the thesis this paper advances.
+The conceptual question remains useful: micro-slip may be better treated as a control state than as a thresholded event. The current manuscript does not provide adequate evidence for that claim. Its synthetic result collapses under simple tuned baselines, so the honest terminal decision is kill/archive rather than submission.
 
 \begin{thebibliography}{9}
 \bibitem[Wang et~al.(2018)]{slip2018}

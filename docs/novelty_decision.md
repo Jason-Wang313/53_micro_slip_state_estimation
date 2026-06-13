@@ -1,5 +1,7 @@
 # Novelty Decision
 
-Chosen thesis: Micro-slip should be estimated as a latent, control-relevant state rather than detected as a binary failure event.
-Why this survives hostile prior work: prior papers mostly stop at detection, friction proxies, or pose stabilization; they do not center a micro-slip state variable with temporal continuity and control use.
-Risk: the paper is only convincing if the estimator changes control behavior in a measurable way.
+Decision after v2 hardening: kill/archive.
+
+Reason: The micro-slip-as-state framing is plausible but the present evidence does not establish it. The original comparison used a weak fixed threshold, and v2 tuned baselines dominate the latent filter.
+
+Novelty boundary: do not claim a new estimator or a demonstrated control advantage from this repo. At most, preserve the idea as a future research direction requiring real data and stronger baselines.
