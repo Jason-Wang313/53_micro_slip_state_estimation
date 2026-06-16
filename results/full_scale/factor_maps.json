@@ -1,0 +1,64 @@
+{
+  "task": {
+    "t00": "pinch lift",
+    "t01": "in-hand rotation",
+    "t02": "cable pull",
+    "t03": "tool insertion",
+    "t04": "cloth pinch",
+    "t05": "bottle cap twist",
+    "t06": "tray carry",
+    "t07": "human handover",
+    "t08": "soft object squeeze",
+    "t09": "peg insertion side load",
+    "t10": "drawer pull changing force",
+    "t11": "fast regrasp"
+  },
+  "object": {
+    "o00": "rigid smooth",
+    "o01": "rigid rough",
+    "o02": "deformable",
+    "o03": "fabric or cable",
+    "o04": "transparent low-feature",
+    "o05": "wet low-friction"
+  },
+  "sensor": {
+    "s00": "parallel jaw tactile",
+    "s01": "visuo-tactile fingertip",
+    "s02": "force-torque plus tactile",
+    "s03": "tactile dexterous hand",
+    "s04": "weak tactile proprioceptive gripper"
+  },
+  "phase": {
+    "p00": "pre-load",
+    "p01": "stable hold",
+    "p02": "incipient shear",
+    "p03": "rolling contact",
+    "p04": "regrasp transition",
+    "p05": "recovery after partial slip"
+  },
+  "excitation": {
+    "e00": "low excitation quasi-static",
+    "e01": "periodic mild shear",
+    "e02": "burst shear",
+    "e03": "friction drift",
+    "e04": "object-family friction shift",
+    "e05": "adversarial low-observability excitation"
+  },
+  "shift": {
+    "h00": "matched calibration",
+    "h01": "tactile gain shift",
+    "h02": "tactile bias shift",
+    "h03": "friction confounding",
+    "h04": "noisy stale tactile stream"
+  },
+  "protocol": {
+    "constant": "Constant hold",
+    "threshold": "Tuned threshold",
+    "raw_tactile": "Raw tactile linear",
+    "ema_tactile": "EMA tactile linear",
+    "friction_proxy": "Friction proxy",
+    "old_latent": "Old latent Kalman",
+    "excitation_aware": "Excitation-aware state",
+    "oracle": "Oracle latent state"
+  }
+}

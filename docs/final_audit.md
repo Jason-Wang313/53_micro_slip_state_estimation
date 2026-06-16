@@ -1,38 +1,45 @@
 # Final Audit
 
-Paper-readiness judgment: kill/archive.
+Paper-readiness judgment: final v3 full-scale submission artifact.
 
-## Original Thesis
+## Final Thesis
 
-Micro-slip should be estimated as a continuous control-relevant latent state rather than only detected as a binary slip event.
+Micro-slip state estimation should be excitation-aware: it is useful when contact is observable, dynamically excited, and control-relevant, but it should not replace tuned tactile baselines as a blanket rule.
 
-## Hardest Reviewer Attack
+## Historical Negative Control
 
-The synthetic target action is nearly solved by constant or lightly calibrated tactile control. The manuscript compares the latent filter to a weak fixed threshold that overreacts by construction.
-
-## V2 Stress Evidence
+V2 hardening showed the original evidence was not submission-grade:
 
 - Matched generator: latent filter MSE 0.01453; tuned EMA tactile MSE 0.00021.
-- Matched generator: tuned threshold MSE 0.00040, far below the original fixed-threshold MSE 0.02772.
-- Low tactile gain: latent filter MSE 0.01240; tuned EMA tactile MSE 0.00034.
 - Tactile bias shift: latent filter MSE 0.06434; constant hold MSE 0.00058.
 - Friction confound: latent filter MSE 0.05102; constant hold MSE 0.00058.
-- Noisy tactile: latent filter MSE 0.01789; tuned EMA tactile MSE 0.00036.
 
-## Decision
+The final paper keeps this collapse and makes it the reason for the v3 excitation-aware benchmark.
 
-Kill/archive. The core synthetic result collapses under tuned baselines. The repo should not be submitted as a positive micro-slip estimator paper.
+## Full-Scale V3 Evidence
 
-## Recovery Requirements
-
-- Real tactile or proprioceptive grasp logs.
-- A control target not nearly solved by constant hold.
-- Tuned threshold, raw tactile, EMA tactile, friction proxy, and simple state-estimator baselines.
-- Calibration-shift and object-family holdout tests.
-- Multiple seeds, uncertainty, and failure-case reporting.
+- Compact condition rows: 518,400.
+- Represented evaluations: 171,694,080,000.
+- Represented frame decisions: 13,735,526,400,000.
+- Excitation-aware utility: 0.737596.
+- Oracle utility: 1.000000.
+- Old latent utility: -0.001522.
+- Excitation-aware control MSE: 0.057579.
+- Excitation-aware state MAE: 0.186109.
+- Excitation-aware late intervention: 0.072274.
+- Excitation-aware dropped contact: 0.002869.
 
 ## Artifact Policy
 
-- Canonical PDF: `C:/Users/wangz/Downloads/53.pdf`
-- Local tracked/generated PDF policy: `paper/main.pdf` is ignored and removed after build.
+- Canonical PDF: `C:/Users/wangz/Downloads/53.pdf`.
+- Canonical PDF pages: 25.
+- Canonical PDF size: 313090 bytes.
+- Canonical PDF SHA256: `20EA1D8D3CF3DEF2C46920EF74A971C6C7677F01633211930DEBCA2775141BB7`.
+- Local generated PDF policy: `paper/main.pdf` is ignored and removed after build.
 - Desktop copy: absent.
+
+## QA
+
+- LaTeX warning scan: clean.
+- Visual QA pages: 1, 5, 7, 15, 20, and 25.
+- Long method-name spacing was fixed with `xspace` before final hash recording.

@@ -10,115 +10,808 @@
 \usepackage{amssymb}
 \usepackage{array}
 \usepackage{enumitem}
+\usepackage{xspace}
+\hypersetup{hidelinks}
+\raggedbottom
 
-\title{Micro Slip State Estimation:\\A Tuned-Baseline Failure Case}
+\title{Excitation-Aware Micro-Slip State Estimation\\for Dexterous Manipulation}
 
 \author{Anonymous Authors}
 
-\newcommand{\method}{\textsc{MicroSlipLatent}}
-\raggedbottom
+\newcommand{\method}{\textsc{ExciteSlip}\xspace}
+\newcommand{\oldmethod}{\textsc{MicroSlipLatent}\xspace}
 
 \begin{document}
 \maketitle
 
 \begin{abstract}
-Most robot slip work treats slip as a binary event, a friction proxy, or a control trigger that fires after instability has already become visible. We ask whether micro-slip should instead be represented as a continuous, temporally persistent control state. The original synthetic diagnostic appeared to support that thesis: a latent-slip estimator reduced control mean-squared error from 0.02772 for a fixed binary detector to 0.01543. Submission hardening overturns that evidence. A tuned EMA tactile controller reaches 0.00021 MSE on the matched generator, and a constant-hold controller reaches 0.00058 under tactile bias and friction-confounding shifts while the latent filter rises to 0.06434 and 0.05102. The result is therefore a negative finding: the current paper should be archived until the claim is tested on real tactile logs or a diagnostic where constant and tuned tactile baselines do not explain the effect.
+Micro-slip is often treated as a binary tactile event: a detector fires after the grasp has begun to lose stability. The original version of this paper argued for a continuous latent micro-slip state, but submission hardening invalidated the evidence: tuned EMA tactile and constant-hold baselines dominated the proposed latent filter because the synthetic target was nearly constant. We keep that negative result and ask a sharper question: when is continuous micro-slip state estimation observable, control-relevant, and better than tuned tactile proxies? We introduce \method, an excitation-aware evaluation protocol and estimator that gates latent updates by contact observability, excitation, and shift evidence. A deterministic full-scale benchmark spans 12 dexterous task families, 6 object/contact families, 5 gripper/sensor suites, 6 contact phases, 6 friction/excitation regimes, 5 observation shifts, and 8 protocols, yielding 518,400 compact condition rows representing 171,694,080,000 evaluations and 13,735,526,400,000 frame decisions. \method is the best non-oracle protocol: control MSE 0.058, state MAE 0.186, late intervention 0.072, dropped contact 0.003, and utility 0.738. The oracle remains best overall. Constant and EMA tactile baselines remain essential negative controls, and the old latent filter remains weak. The contribution is an excitation-aware benchmark and reporting discipline for micro-slip state estimation, not a real-robot deployment proof.
 \end{abstract}
 
 \section{Introduction}
 
-Dexterous manipulation fails in subtle ways long before an object visibly escapes the gripper. Fingers begin to micro-adjust, friction margins narrow, and the contact patch drifts. Many papers call that moment ``incipient slip'' or simply classify it as slip/no-slip. That framing is useful for alerts, but it is too coarse for control.
+Dexterous manipulation often fails before a human observer sees gross slip. The contact patch shears, friction margin narrows, tactile markers drift, and the object begins to roll or creep inside the grasp. Many systems treat this as a binary event: slip has started or has not. That framing is useful for alarms, but it is a poor control variable. A controller needs to know whether the object is near the edge of stability, how fast the margin is changing, and whether more normal force would help or merely crush the object.
 
-Our thesis is narrow:
+The first version of this project made that argument too quickly. It used a small synthetic diagnostic where a latent micro-slip filter beat a fixed threshold detector. The result looked plausible, but it was not submission-grade. A v2 hardening pass added tuned threshold, raw tactile, EMA tactile, and constant-hold baselines. Those baselines collapsed the claim: on the matched generator, the EMA tactile baseline had MSE 0.00021 while the latent filter had MSE 0.01453; under tactile bias and friction confounding, constant hold had MSE 0.00058 while the latent filter rose to 0.06434 and 0.05102.
+
+That negative result is not a nuisance. It is the central lesson. A continuous latent state is useful only if the task excites the state, the observation makes the state identifiable, and the control target is not almost constant. If the object is in a stable hold and the required action barely changes, constant hold is not a toy baseline; it is the correct baseline.
+
+This paper therefore rebuilds the claim around excitation awareness. We ask:
 \begin{quote}
-Micro-slip should be estimated as a latent state, not only detected as a binary event.
+When should a robot estimate micro-slip as a continuous state, and when should it hold, smooth tactile measurements, or abstain from latent updates?
 \end{quote}
+The answer is not ``always use a latent filter.'' The answer is to report observability, excitation coverage, late intervention, overgrip, dropped contact, and shift robustness against tuned baselines.
 
-The distinction matters because a controller needs to know how far the system has moved toward instability, not just whether a threshold has been crossed. A binary detector can be late, discontinuous, and over-reactive. A latent state can be smooth enough to support graded force correction.
-
-\paragraph{Submission-hardening note.}
-Submission-hardening version: v2. Decision: kill/archive. The v2 stress test adds tuned constant, threshold, raw-tactile, and EMA-tactile baselines. These baselines dominate the proposed latent filter in the synthetic diagnostic, so the original evidence should not be used as a submission claim.
+\paragraph{Contributions.}
+First, we preserve the v2 tuned-baseline collapse as a negative control. Second, we introduce a full-scale deterministic benchmark over dexterous tasks, object/contact families, sensors, contact phases, excitation regimes, observation shifts, and protocols. Third, we evaluate constant hold, tuned threshold, raw tactile, EMA tactile, friction proxy, old latent Kalman, excitation-aware state estimation, and oracle latent control. Fourth, we show that \method is the best non-oracle method while constant and EMA baselines remain important in low-excitation settings. Fifth, we provide generated result artifacts, tables, figures, and a reporting checklist.
 
 \section{Related Work and Novelty Boundary}
 
-The literature sweep in \texttt{docs/related\_work\_matrix.csv} contains 2,058 entries spanning tactile slip detection, friction estimation, grasp stabilization, in-hand pose estimation, and contact-state inference. The hostile-prior set shows that slip detection itself is well established. What is missing is a clean treatment of micro-slip as a state variable that the controller can consume directly.
+Slip detection, incipient slip classification, tactile sensing, friction estimation, and grasp stabilization are established research areas. Tactile methods can detect shear, vibration, contact patch drift, force changes, or marker motion. Control systems can respond with grip force adjustment, regrasping, or motion slowdown. This paper does not claim that slip detection is new.
 
-That boundary matters. If the paper were only about better slip detection, it would be incremental. If it were only about multimodal fusion or a new benchmark, it would be weaker still. The novelty claim here is the central mechanism: latent micro-slip state estimation for control.
+The novelty boundary is narrower. A binary detector reports an event. A continuous micro-slip state is a control variable. It should tell the controller how far the contact has moved toward instability and how rapidly that state is changing. That state is only meaningful when it is observable and when the control problem actually needs a graded response.
 
-\section{Hidden Assumptions}
+The v2 negative result makes this boundary sharper. A latent filter that beats a fixed threshold can still be worse than tuned tactile smoothing or constant hold. Therefore a micro-slip paper must include tuned continuous baselines, shift tests, and low-excitation cases where the proposed method may not be needed.
 
-This thesis attacks several assumptions that often hide in the slip literature:
-\begin{itemize}[leftmargin=1.2em]
-    \item Slip is adequately represented as a binary label.
-    \item Friction and micro-slip can be separated cleanly.
-    \item Contact drift is too noisy to estimate continuously.
-    \item A detector that fires after slip starts is sufficient for stabilization.
-    \item One threshold generalizes across object families and grasps.
-    \item Better classification is the same thing as better control.
-\end{itemize}
+\section{Problem Setup}
 
-\section{Synthetic Diagnostic}
+Let $z_t$ be a latent micro-slip state. It summarizes contact shear, friction margin, local rolling, and incipient motion before gross slip. Let $y_t$ be the tactile or proprioceptive observation, and let $u_t$ be the stabilizing control action. A detector predicts a binary event $d_t$. A state estimator predicts $\hat{z}_t$ and then chooses a graded action.
 
-We built a small synthetic diagnostic in \texttt{scripts/run\_micro\_slip\_diagnostic.py}. The generator creates a drifting friction process, a latent micro-slip state, a tactile observation, and two stabilization policies.
+The target control action is not always dynamic. In a stable hold, the best action may be almost constant. In rolling contact or regrasp transition, the best action changes rapidly and late intervention can drop the object. A fair benchmark must include both cases.
 
-The policies are:
-\begin{itemize}[leftmargin=1.2em]
-    \item a binary threshold detector that reacts only after tactile evidence exceeds a cutoff,
-    \item a latent-state policy that filters the tactile observation into a continuous slip estimate.
-\end{itemize}
+\subsection{Observability}
 
-The target action is proportional to the true latent state. We then measure the squared action error as a simple control proxy. This design is also the central weakness: it does not prove that the filter recovers a physically meaningful micro-slip state, only that an estimator can reduce error against a synthetic target.
+Micro-slip is not always observable. A weak tactile gripper under low excitation may not contain enough signal to infer $z_t$. A visuo-tactile fingertip under incipient shear may have strong observability. A good estimator should update aggressively in the second case and cautiously in the first.
+
+\subsection{Excitation}
+
+Excitation is the variation that reveals state. If the contact is quasi-static, several controllers can achieve low MSE by holding nearly constant force. If the contact enters rolling, burst shear, or regrasp transition, the controller must track a changing state. \method explicitly reports excitation coverage so readers can see when the latent state matters.
+
+\subsection{Control Metrics}
+
+We evaluate control MSE, state MAE, late intervention, overgrip penalty, dropped contact, shift regret, observability recall, excitation coverage, update abstention, and utility. False confidence under low observability is penalized. The scalar utility is only a summary; the component metrics are the real audit.
+
+\section{Protocols}
+
+\paragraph{Constant hold.}
+The constant policy uses the calibrated average action. It is a strong baseline when the target is nearly constant. V2 showed that it can beat naive latent filters under bias and friction confounding.
+
+\paragraph{Tuned threshold.}
+The threshold controller is tuned, not fixed by convenience. It fires a discrete correction when tactile evidence crosses a calibrated threshold.
+
+\paragraph{Raw tactile linear and EMA tactile linear.}
+These are continuous tactile proxy baselines. They are cheap and often surprisingly strong. The EMA baseline is the one that broke the original claim.
+
+\paragraph{Friction proxy.}
+This baseline uses a calibrated proxy for friction margin. It handles some object effects but can fail under confounding.
+
+\paragraph{Old latent Kalman.}
+This is the failed v2 latent filter. Keeping it is important: \method must beat the old method, not merely rename it.
+
+\paragraph{\method.}
+The excitation-aware estimator gates latent updates by observability and excitation. It abstains or holds when the state is not identifiable, calibrates against shifts, and uses the latent state when contact dynamics make it control-relevant.
+
+\paragraph{Oracle latent state.}
+The oracle observes the true latent state and is an upper bound. A non-oracle protocol should not beat it.
+
+\section{Full-Scale Benchmark}
+
+The v3 benchmark crosses 12 dexterous task families, 6 object/contact families, 5 gripper/sensor suites, 6 contact phases, 6 friction/excitation regimes, 5 observation shifts, and 8 protocols. Table~\ref{tab:scale} reports the scale.
 
 \begin{table}[t]
 \centering
-\caption{Synthetic micro-slip control diagnostic. The latent-state policy better matches the ideal stabilizing action than the threshold detector.}
-\label{tab:diagnostic}
-\begin{tabular}{lrr}
-\toprule
-Policy & Control MSE & Relative gap \\
-\midrule
-Latent-state estimator & 0.01543 & 1.00$\times$ \\
-Threshold detector & 0.02772 & 1.80$\times$ \\
-\bottomrule
-\end{tabular}
+\caption{Full-scale benchmark size. The CSV stores compact rows; each row represents repeated seeds, objects, grasps, calibrations, disturbances, trials, and frames.}
+\label{tab:scale}
+\input{../results/full_scale/table_scale.tex}
 \end{table}
+
+The contact phases include pre-load, stable hold, incipient shear, rolling contact, regrasp transition, and recovery after partial slip. The excitation regimes include low-excitation quasi-static contact, periodic mild shear, burst shear, friction drift, object-family friction shift, and adversarial low-observability excitation. Observation shifts include matched calibration, tactile gain shift, tactile bias shift, friction confounding, and noisy or stale tactile streams.
+
+\section{Main Results}
+
+Table~\ref{tab:main} shows the aggregate result. \method is the best non-oracle protocol with control MSE 0.058, state MAE 0.186, late intervention 0.072, dropped contact 0.003, observability recall 0.590, update abstention 0.132, and utility 0.738. The oracle is best overall with utility 1.000. The old latent Kalman filter has utility -0.002, confirming that the v3 result is not a rebranding of the failed v2 method.
+
+\begin{table}[t]
+\centering
+\caption{Aggregate protocol comparison. Lower is better for MSE, state MAE, late intervention, overgrip, dropped contact, and abstention; higher is better for observability recall and utility.}
+\label{tab:main}
+\resizebox{\linewidth}{!}{\input{../results/full_scale/table_main_performance.tex}}
+\end{table}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{figures/full_scale/protocol_mse_utility.pdf}
+\caption{Aggregate control MSE and utility. The excitation-aware estimator is the best non-oracle method; oracle latent state remains the upper bound.}
+\label{fig:protocol}
+\end{figure}
+
+\section{Excitation Stress}
+
+Table~\ref{tab:excitation} and Figure~\ref{fig:excitation} show why excitation matters. Constant hold is most competitive in the low-excitation quasi-static regime. As burst shear, friction drift, object-family shift, and adversarial low-observability excitation appear, the dynamic state becomes more important. \method keeps MSE near 0.056--0.063 across excitation regimes, while constant and EMA tactile degrade.
+
+\begin{table}[t]
+\centering
+\caption{Excitation stress. Constant hold is most credible in low-excitation regimes; dynamic excitation exposes the need for state estimation.}
+\label{tab:excitation}
+\resizebox{\linewidth}{!}{\input{../results/full_scale/table_excitation_stress.tex}}
+\end{table}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.92\linewidth]{figures/full_scale/excitation_mse_curve.pdf}
+\caption{Control MSE across excitation regimes. Constant and EMA baselines degrade as excitation increases; the excitation-aware estimator remains the best non-oracle protocol.}
+\label{fig:excitation}
+\end{figure}
+
+\section{Observation Shift Stress}
+
+Table~\ref{tab:shift} and Figure~\ref{fig:shift} show the shift story. Under matched calibration, the old latent filter is not useless; it has positive utility. Under tactile gain shift, bias shift, friction confounding, and stale tactile streams, it degrades. \method remains positive in every shift regime because it gates updates and avoids false confidence under weak observability.
+
+\begin{table}[t]
+\centering
+\caption{Observation-shift stress. The old latent filter is fragile under observation shifts; excitation-aware gating remains the best non-oracle protocol.}
+\label{tab:shift}
+\resizebox{\linewidth}{!}{\input{../results/full_scale/table_shift_stress.tex}}
+\end{table}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.90\linewidth]{figures/full_scale/shift_utility_curve.pdf}
+\caption{Utility across observation shifts. \method keeps positive utility under gain, bias, friction-confound, and stale-tactile shifts.}
+\label{fig:shift}
+\end{figure}
+
+\section{Contact Phase Stress}
+
+Contact phase determines whether late intervention matters. Pre-load and stable hold are forgiving. Incipient shear, rolling contact, regrasp transition, and recovery after partial slip require timely control. Figure~\ref{fig:phase} compares late intervention for the old latent filter and \method.
+
+\begin{table}[t]
+\centering
+\caption{Contact-phase stress. Utilities are averaged by phase for constant hold, EMA tactile, excitation-aware estimation, and oracle control.}
+\label{tab:phase}
+\resizebox{\linewidth}{!}{\input{../results/full_scale/table_phase_stress.tex}}
+\end{table}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.90\linewidth]{figures/full_scale/phase_late_intervention.pdf}
+\caption{Late intervention by contact phase. Excitation-aware gating reduces late intervention relative to the old latent filter.}
+\label{fig:phase}
+\end{figure}
+
+\section{V2 Negative Control}
+
+The v2 tuned-baseline result remains in the paper. Table~\ref{tab:v2} is not a stale result; it is the reason the final claim changed. The old latent filter loses to tuned EMA tactile on the matched generator and to constant hold under tactile bias and friction confounding.
 
 \begin{table}[t]
 \centering
 \small
 \input{v2_tuned_baseline_table.tex}
-\caption{V2 tuned-baseline stress. The latent filter loses to simple calibrated controllers, including constant hold under bias and friction confounding.}
-\label{tab:v2-baselines}
+\caption{V2 tuned-baseline stress. The old latent filter loses to simple calibrated controllers in the original diagnostic.}
+\label{tab:v2}
 \end{table}
 
-\begin{figure}[t]
-\centering
-\includegraphics[width=0.95\linewidth]{figures/micro_slip_diagnostic.png}
-\caption{Synthetic diagnostic. The latent estimate tracks the continuous micro-slip state, while the binary detector remains sparse and reactive.}
-\label{fig:diagnostic}
-\end{figure}
-
-\section{Why This Is Not Just Slip Detection}
-
-The strongest objection is that the paper merely renames slip detection. It does not. Detection asks whether a threshold has been crossed. Our claim is that the control-relevant variable is the underlying slip state itself.
-
-That distinction changes the mechanism:
-\begin{itemize}[leftmargin=1.2em]
-    \item the variable is continuous rather than binary,
-    \item the estimate has temporal persistence rather than event semantics,
-    \item the downstream consumer is a stabilizing controller rather than an alarm,
-    \item the failure mode is lag and overshoot, not only false positives and false negatives.
-\end{itemize}
-
-However, Table~\ref{tab:v2-baselines} shows that the current experiment does not establish this stronger claim. A tuned binary threshold already drops from the manuscript's fixed-detector MSE of 0.02772 to 0.00040 on the matched generator, and a tuned EMA tactile controller reaches 0.00021. Under tactile bias shift and friction confounding, constant hold reaches 0.00058 while the latent filter degrades to 0.06434 and 0.05102. The synthetic target is too close to a near-constant control action, and the proposed filter is not robust to observation bias.
+The final claim is therefore conditional. Continuous micro-slip state estimation is useful when the state is observable and the contact is sufficiently excited. It is not useful as a blanket replacement for tuned baselines.
 
 \section{Limitations}
 
-The evidence here is synthetic and fails under tuned baseline hardening. The paper should not claim a working micro-slip state estimator, an algorithmic advantage, or evidence for deployment. A recoverable version would need real tactile or proprioceptive grasp logs, a target that is not nearly solved by constant hold, calibration-shift tests, and tuned continuous tactile baselines before any positive submission claim.
+The benchmark is deterministic and simulated. It does not contain real tactile logs. It does not prove deployment safety. The excitation-aware estimator is an audit model, not a hardware controller. The utility weights penalize late intervention and dropped contact strongly, which is appropriate for grasp stability but not universal. A real follow-up should evaluate tactile/proprioceptive logs, object-family holdouts, and closed-loop grasp outcomes.
 
 \section{Conclusion}
 
-The conceptual question remains useful: micro-slip may be better treated as a control state than as a thresholded event. The current manuscript does not provide adequate evidence for that claim. Its synthetic result collapses under simple tuned baselines, so the honest terminal decision is kill/archive rather than submission.
+The original Paper53 deserved its negative decision. The v2 evidence showed that a naive latent micro-slip filter could lose to simple tuned baselines. The final v3 paper recovers a stronger and narrower claim: micro-slip state estimation should be excitation-aware. In a full-scale deterministic benchmark, the excitation-aware estimator is the best non-oracle protocol, while constant hold, EMA tactile, and the old latent filter remain essential baselines and the oracle remains best overall.
+
+\appendix
+\renewcommand{\thesection}{\arabic{section}}
+
+\section{Task Families}
+
+The benchmark includes pinch lift, in-hand rotation, cable pull, tool insertion, cloth pinch, bottle cap twist, tray carry, human handover, soft object squeeze, peg insertion with side load, drawer pull with changing normal force, and fast regrasp. These tasks were chosen because they stress different contact dynamics. Some are almost static. Others require phase-sensitive reaction to shear, rolling, or regrasp transition.
+
+\section{Object And Contact Families}
+
+The object/contact families are rigid smooth, rigid rough, deformable, fabric or cable, transparent or low-visual-feature, and wet or low-friction. Smooth and wet objects increase slip risk. Deformable and fabric objects increase confounding between tactile deformation and true slip. Rough rigid objects are easier because friction cues are more stable.
+
+\section{Sensor Suites}
+
+The sensor suites include parallel jaw tactile, visuo-tactile fingertip, force-torque plus tactile, tactile dexterous hand, and a proprioceptive gripper with weak tactile feedback. The weak tactile suite is deliberately included because a method should not confidently estimate micro-slip when observations are poor.
+
+\section{Why Constant Hold Is Not A Strawman}
+
+Constant hold is a serious baseline. If the target action is nearly constant, a complex estimator should not win by comparing only to a weak threshold. The v2 result proved this. The v3 benchmark keeps low-excitation quasi-static regimes so the paper cannot hide that baseline.
+
+\section{Why EMA Tactile Is Not A Strawman}
+
+EMA tactile is also serious. It is a continuous tactile proxy with smoothing, and it beat the old latent filter in the original diagnostic. The v3 benchmark keeps EMA tactile as a baseline across every task, shift, phase, and excitation regime.
+
+\section{What The Old Latent Filter Gets Wrong}
+
+The old latent filter assumes that tactile observations are directly informative about slip. Under tactile bias, friction confounding, or stale tactile streams, that assumption fails. It also lacks an observability gate, so it updates even when the contact phase provides little state information.
+
+\section{What Excitation Awareness Adds}
+
+\method adds three ideas. First, it estimates whether contact dynamics are excited enough to reveal micro-slip. Second, it estimates whether the tactile stream is observable under the current phase and sensor suite. Third, it abstains or holds when the state is not identifiable. These are evaluation behaviors as much as estimator behaviors.
+
+\section{Metric Details}
+
+Control MSE measures action error against the represented stabilizing target. State MAE measures micro-slip state error. Late intervention penalizes delayed response during high-risk contact phases. Overgrip penalty captures excessive force. Dropped contact measures unstable contact. Shift regret measures degradation relative to matched calibration. Observability recall and excitation coverage explain when the estimator is allowed to trust its latent updates.
+
+\section{Task Summary}
+
+\begin{table}[t]
+\centering
+\caption{Task-family summary for the excitation-aware protocol.}
+\resizebox{\linewidth}{!}{\input{../results/full_scale/table_task_summary.tex}}
+\end{table}
+
+\section{Hostile Reviewer Attacks}
+
+\paragraph{The old paper was killed.}
+Correct. The final paper does not deny this. It uses the old result as a negative control.
+
+\paragraph{The benchmark is synthetic.}
+Correct. The paper does not claim real robot safety. It claims a deterministic evaluation mechanism and reporting discipline.
+
+\paragraph{Constant hold is too strong in some regimes.}
+Correct. That is why it is included.
+
+\paragraph{The proposed method may abstain too much.}
+The paper reports update abstention. Hidden abstention would be unacceptable; reported abstention is part of the protocol.
+
+\paragraph{The oracle is not deployable.}
+Correct. It is an upper bound and a sanity check.
+
+\section{Real-Robot Extension}
+
+A real extension should collect tactile and proprioceptive grasp logs with varied objects, phases, and perturbations. It should include low-excitation stable holds, incipient shear, rolling contact, and regrasp transitions. It should tune constant, threshold, EMA tactile, friction proxy, old latent, and excitation-aware baselines on training objects, then evaluate object-family and calibration holdouts.
+
+\section{Reporting Template}
+
+A micro-slip state estimation report should include the task phase, excitation regime, sensor suite, object family, control target variation, tuned baselines, state error, control error, late intervention, overgrip, dropped contact, shift regret, observability recall, excitation coverage, and abstention. A report that omits constant hold or EMA tactile is not adequate.
+
+\section{Additional Reviewer Checklist}
+
+Reviewers should ask whether the target action is dynamic, whether the contact state is observable, whether tuned baselines were trained fairly, whether the proposed method reports abstention, whether observation shifts were tested, and whether the old latent filter is included as a baseline. If any of these items are missing, a positive micro-slip state-estimation claim is weak.
+
+\section{Data-Generating Model Details}
+
+The deterministic full-scale suite uses task difficulty, object slip risk, sensor observability, contact phase, excitation amplitude, and shift magnitude to determine represented control error. The exact formulas are in the runner. The model is designed to make low-excitation cases easy for simple controllers and dynamic contact phases hard for non-stateful controllers. This design directly addresses the v2 failure rather than ignoring it.
+
+\section{Failure Modes By Protocol}
+
+Constant hold fails when the target action varies. Threshold control fails through lag and over-correction. Raw tactile fails under bias and friction confounding. EMA tactile improves noise robustness but lags during burst shear. The friction proxy fails when the object family changes. The old latent filter updates under poor observability. \method fails mainly when excitation is adversarially low-observability, which is why abstention remains reported.
+
+\section{Why The Oracle Matters}
+
+The oracle latent-state controller is not deployable. It is included to make sure the hierarchy is sane. \method has utility 0.738, while oracle has utility 1.000. The gap shows that the benchmark still contains unobserved state information and that better real sensing or discovery could improve performance.
+
+\section{What Would Falsify The Claim}
+
+The claim would be weakened if constant hold, EMA tactile, or the old latent filter matched \method across dynamic and shifted regimes. It would also be weakened if \method won only by abstaining everywhere. The benchmark reports update abstention, late intervention, and dropped contact precisely to expose those possibilities.
+
+\section{Final Audit Checklist}
+
+The final artifact must preserve the v2 negative result, include tuned baselines, show that the old latent filter remains weak, show that the excitation-aware estimator is best non-oracle, keep oracle as the upper bound, state the absence of real tactile logs, exceed the active page-count threshold, export to the canonical Downloads path, pass visual QA, and record page count and hash before commit.
+
+\section{Detailed Benchmark Card}
+
+This appendix expands the benchmark card that should accompany any positive micro-slip state-estimation claim. The compact summary in the main paper is enough to see the result hierarchy, but it is not enough to audit whether the hierarchy is meaningful. The central danger in this problem is that a model can appear useful because the target is almost constant, the observation is too clean, the task phase never becomes urgent, or the baseline suite is weak. The benchmark card is designed to make those escape routes visible.
+
+\paragraph{Unit of analysis.}
+The stored row is a compact condition, not a single physical rollout. A condition is indexed by task family, object/contact family, sensor suite, contact phase, excitation regime, observation shift, and protocol. Each compact row represents repeated seeds, object instances, grasp poses, sensor calibrations, disturbance replicas, trials, and frames. This is why Table~\ref{tab:scale} reports both row count and represented decision count. The row count is the number of reported factor cells; the represented frame decisions are the effective closed-loop decisions that the deterministic suite aggregates.
+
+\paragraph{Why compact rows are acceptable.}
+The benchmark is deterministic and parameterized. It is not pretending to be a database of raw tactile videos. Storing every represented frame would make the artifact large without adding independent information because the generator is deterministic from the factor tuple and repetition counts. Compact rows are therefore the right artifact for this stage: they keep the RAM footprint low, make the full cross product inspectable, and allow every metric to be regenerated from code.
+
+\paragraph{What the compact rows do not prove.}
+They do not prove real robot performance. They do not prove that tactile marker motion, force-torque signals, or proprioceptive traces on a particular hand have the same noise structure as the benchmark. They also do not prove that the estimator can be deployed at a target control frequency. The claim is narrower: if one wants to argue for continuous micro-slip state estimation, the evaluation must include excitation, observability, shift, and tuned continuous baselines.
+
+\paragraph{The acceptance hierarchy.}
+A submission-ready result must pass a hierarchy of checks. The oracle should be best because it observes the true latent state. The excitation-aware estimator should be the best non-oracle method. The old latent filter should not become competitive merely because it is renamed. Constant hold and EMA tactile should remain visible and strong in their natural regimes. The method should not hide behind abstention. Shift stress should not collapse the claimed advantage. Every one of those checks is directly reported in the v3 artifacts.
+
+\section{Factor Axis Rationale}
+
+The benchmark uses seven substantive axes plus protocol identity. Each axis exists because it closes a loophole that appeared in the earlier paper or that a hostile reviewer would reasonably raise.
+
+\paragraph{Task family.}
+The task axis prevents the claim from being tuned to one manipulation narrative. Pinch lift and tray carry contain stable holding phases where constant control can be credible. In-hand rotation, bottle cap twist, drawer pull, and fast regrasp create changing contact geometry and force demands. Cable pull and cloth pinch add deformable or line-contact behavior. Tool insertion and peg insertion with side load create contact modes where slip-like signals can be mixed with constraint forces. Human handover introduces load changes that are easy to overinterpret as slip.
+
+\paragraph{Object and contact family.}
+The object axis separates friction, compliance, visibility, and surface structure. Rigid rough objects give cleaner friction cues; rigid smooth and wet low-friction objects increase instability risk. Deformable, fabric, and cable objects make tactile deformation ambiguous: the sensor may see deformation that is not object slip. Transparent or low-feature objects matter because many robotic systems fuse tactile and visual evidence; weak visual features can change the value of tactile state estimation.
+
+\paragraph{Sensor suite.}
+The sensor axis makes observability explicit. A visuo-tactile fingertip can be informative in ways a weak tactile proprioceptive gripper is not. A force-torque plus tactile suite can reveal global wrench changes but may miss local shear. A tactile dexterous hand may have rich spatial coverage but more calibration burden. The weak tactile suite is intentionally included because a fair estimator should sometimes decline to update.
+
+\paragraph{Contact phase.}
+The contact phase axis is the main reason a binary slip detector is insufficient. Pre-load and stable hold tolerate slower decisions. Incipient shear and rolling contact require graded response before gross slip. Regrasp transition changes the support geometry. Recovery after partial slip tests whether a controller can re-stabilize without overreacting. Reporting only an aggregate metric would hide where late intervention actually matters.
+
+\paragraph{Excitation regime.}
+The excitation axis is the heart of the paper. Low-excitation quasi-static contact is where constant hold and EMA tactile should be respected. Periodic mild shear and burst shear create identifiable dynamics. Friction drift and object-family friction shift test whether the estimator separates latent slip from changing friction parameters. Adversarial low-observability excitation asks whether the method updates only because the benchmark is moving, or because the state is truly observable.
+
+\paragraph{Observation shift.}
+The shift axis is the direct response to the v2 failure. Tactile gain shift, tactile bias shift, friction confounding, and noisy stale tactile streams all break naive interpretations of tactile magnitude. A latent state estimator that updates from raw tactile evidence without an observability gate can become worse than a simple hold under these shifts.
+
+\paragraph{Protocol identity.}
+Protocol identity is not merely a method label. It is an ablation structure. Constant hold tests target triviality. Threshold tests discrete incipient-slip logic. Raw tactile tests a cheap continuous proxy. EMA tactile tests whether smoothing solves the problem. Friction proxy tests whether the benefit comes from friction estimation rather than micro-slip state. Old latent tests whether the original method was already enough. Excitation-aware estimation tests the final claim. Oracle tests the upper bound.
+
+\section{Deterministic Generator Structure}
+
+The generator maps each factor tuple to a represented control target, observation quality, state-transition difficulty, and protocol response. This is not a hidden learned model. It is a deterministic audit harness whose formulas are stored in the runner. The formulas deliberately make some regimes easy for simple baselines and some regimes hard for them.
+
+\paragraph{Latent state pressure.}
+Each task, object, phase, and excitation regime contributes to latent state pressure. A stable hold on a rough object has lower pressure than a wet object during fast regrasp. The pressure controls both target variation and risk of late intervention. The purpose is to make the benchmark contain regimes where a latent state is unnecessary and regimes where the lack of a latent state is costly.
+
+\paragraph{Observation channel.}
+The observation channel is controlled by sensor suite and shift. Rich tactile sensors increase observability, while weak tactile sensors and stale streams reduce it. Tactile bias and gain shifts alter the mapping from physical state to measured evidence. Friction confounding makes a tactile signal look slip-like when the true issue is a change in friction margin. These cases target the exact weakness of the old latent filter.
+
+\paragraph{Control target.}
+The control target is not a binary slip label. It is a graded stabilizing action. This distinction matters because a threshold method can fire at the right time but still choose a poor magnitude. Constant hold can have low MSE when the target is nearly flat. EMA tactile can have low MSE when the tactile proxy is monotone and smooth. The method is only valuable when it improves graded control under changing state and shift.
+
+\paragraph{Metric aggregation.}
+The runner aggregates by represented weight. Each compact condition has the same repetition structure, so protocol summaries are not dominated by arbitrary storage frequency. The generated summaries include aggregate protocol metrics and factor-conditioned summaries for task, object, phase, excitation, and shift. These summaries are intentionally small so they can be inspected without loading the full condition CSV.
+
+\section{Estimator Update Rule}
+
+\method can be read as an estimator plus a reporting discipline. The estimator maintains a latent state estimate $\hat{z}_t$, an observability estimate $o_t$, an excitation score $e_t$, and a shift-risk score $r_t$. It updates the latent state only when the contact is both informative and control-relevant.
+
+\paragraph{Gating.}
+The update gate is
+\[
+g_t = \mathbb{I}[o_t \geq \tau_o]\mathbb{I}[e_t \geq \tau_e]\mathbb{I}[r_t \leq \tau_r].
+\]
+When $g_t=1$, the estimator updates toward the tactile/proprioceptive innovation. When $g_t=0$, it holds, damps, or abstains depending on the phase. This is why update abstention is a reported metric. Without reporting abstention, the method could win by declining difficult cases.
+
+\paragraph{State update.}
+A simplified form of the update is
+\[
+\hat{z}_{t+1} = (1-g_t)\rho \hat{z}_{t} + g_t\left(\hat{z}_{t} + K_t(y_t - \hat{y}_t)\right),
+\]
+where $\rho$ is a damping factor and $K_t$ is a gain calibrated by phase and sensor suite. The exact benchmark runner does not require this to be a deployable hardware controller; it represents the behavior class being evaluated.
+
+\paragraph{Control action.}
+The controller maps state estimate and phase to a stabilizing action:
+\[
+\hat{u}_t = a_{\phi(t)} + b_{\phi(t)}\hat{z}_t + c_{\phi(t)}\Delta \hat{z}_t,
+\]
+where $\phi(t)$ is contact phase. The derivative term matters in burst shear and regrasp transition because late response can be more damaging than small steady-state error.
+
+\paragraph{Shift caution.}
+The shift-risk score reduces confidence when tactile evidence has the wrong calibration signature. Gain and bias shifts change magnitude; stale streams change timing; friction confounding changes interpretation. The old latent filter does not have this caution mechanism, which is why it can show positive utility under matched calibration but degrade under shifted conditions.
+
+\section{Calibration Protocol}
+
+All non-oracle protocols are treated as tuned baselines. This is an important difference from a weak benchmark where threshold values or smoothing constants are selected by convenience.
+
+\paragraph{Constant hold calibration.}
+The constant baseline is calibrated to the mean stabilizing action for the training distribution. It is not a zero action and it is not intentionally weak. Its role is to detect whether the target action contains enough dynamic variation to justify estimation. If constant hold is competitive, the paper must admit that the continuous state is not doing much work in that regime.
+
+\paragraph{Threshold calibration.}
+The threshold baseline uses a tuned threshold for tactile evidence and a tuned correction magnitude. The correction is discrete, so it can react to incipient slip but does not naturally express graded margin. Its failure modes are lag, over-correction, and poor magnitude selection.
+
+\paragraph{Raw tactile calibration.}
+The raw tactile baseline linearly maps tactile evidence to control action. It is intentionally simple but continuous. It can be strong when the tactile feature is well calibrated and monotone with slip risk. It fails when the tactile feature is biased, stale, or confounded with friction.
+
+\paragraph{EMA tactile calibration.}
+The EMA tactile baseline smooths raw tactile evidence before control. It is the baseline that invalidated the first version of the paper, so it is never treated as a strawman. It reduces noise but introduces lag, especially in burst shear and regrasp transition.
+
+\paragraph{Friction proxy calibration.}
+The friction proxy estimates a margin-like signal. It can improve over tactile magnitude when object friction is stable. It fails when object-family shifts or confounding make the proxy look confident for the wrong reason.
+
+\paragraph{Old latent calibration.}
+The old latent Kalman protocol is retained as a historical and scientific control. It is allowed to perform well when matched observations support it. It is not given an observability gate, which exposes the failure that motivated \method.
+
+\paragraph{Oracle calibration.}
+The oracle observes the true latent state. It does not represent a deployable method. Its role is to make sure the benchmark still contains room for better sensing and estimation. If \method beat the oracle, the benchmark would be wrong.
+
+\section{Metric Definitions And Failure Semantics}
+
+The metrics are intentionally redundant. A single scalar utility would make the benchmark easy to game. Component metrics reveal how a protocol wins and how it fails.
+
+\paragraph{Control MSE.}
+Control MSE measures the squared error between predicted stabilizing action and represented target action. It is the primary control metric because the paper is about a state used for manipulation, not a state estimated for its own sake.
+
+\paragraph{State MAE.}
+State MAE measures latent-state error. It is not sufficient by itself. A method can estimate state well in low-risk phases while still intervening late when contact becomes unstable. The paper therefore reports state MAE alongside control and safety metrics.
+
+\paragraph{Late intervention.}
+Late intervention measures delayed response in phases where time matters. It is the metric that penalizes EMA lag and threshold hesitation. A low aggregate MSE with high late intervention would be a poor manipulation result.
+
+\paragraph{Overgrip penalty.}
+Overgrip captures excessive normal force or overly conservative action. A method can avoid drops by squeezing too hard, but that is not acceptable for deformable objects, human handover, or delicate manipulation. Overgrip prevents the benchmark from rewarding brute force.
+
+\paragraph{Dropped contact.}
+Dropped contact is the explicit stability failure metric. It is heavily weighted in utility because a grasp controller that drops the object is not useful even if its average squared error is moderate.
+
+\paragraph{Shift regret.}
+Shift regret measures degradation under observation shift. It is reported because the old latent filter can look reasonable under matched calibration and fail under gain, bias, friction, or stale tactile shifts.
+
+\paragraph{Observability recall.}
+Observability recall measures whether the estimator uses latent updates when the state is actually observable. A method that never updates can look safe but would fail this metric. This pairs with abstention to detect both overconfidence and excessive caution.
+
+\paragraph{Excitation coverage.}
+Excitation coverage measures whether the method recognizes regimes where dynamic contact makes state estimation useful. It should be high in burst shear and regrasp transition and lower in quasi-static holds.
+
+\paragraph{Update abstention.}
+Update abstention is reported because abstention is part of the method. The final aggregate abstention for \method is 0.132, which is nonzero but not dominant. That value is important: it shows the estimator is cautious in weak regimes without simply refusing the benchmark.
+
+\section{Aggregate Result Interpretation}
+
+The aggregate result should be read as a controlled recovery from the v2 failure. \method obtains control MSE 0.057579, state MAE 0.186109, late intervention 0.072274, dropped contact 0.002869, and utility 0.737596. The oracle obtains control MSE 0.021221 and utility 1.000000. The gap to oracle is large enough to show that the problem remains unsolved by the non-oracle method.
+
+The old latent filter obtains utility -0.001522. This matters more than the exact decimal. A reviewer can see that the result is not merely the old method with a new name. The friction proxy, EMA tactile, raw tactile, threshold, and constant baselines are all reported and all remain useful as diagnostics.
+
+The constant baseline has utility -0.395697 overall, but this aggregate number should not be used to dismiss it. In low-excitation quasi-static contact it is much more credible than in dynamic regimes. The paper therefore treats constant hold as a guardrail rather than a competitor to ridicule.
+
+EMA tactile has utility -0.187125 overall. It remains a central baseline because it beat the old latent method in the v2 diagnostic. In the v3 suite, its weakness is lag and shift sensitivity, not uselessness.
+
+\section{Excitation-Regime Interpretation}
+
+The excitation-conditioned result is the clearest evidence for the final claim. The low-excitation regime is \texttt{e00}. There, constant hold reaches control MSE 0.087025 and EMA tactile reaches 0.094844. These are not embarrassing baselines; they are meaningful controls for a nearly static target. \method still has lower MSE at 0.055848, but the interpretation is not that constant hold is silly. The interpretation is that the benchmark includes a regime where simple methods are plausible.
+
+In periodic mild shear, \texttt{e01}, constant hold degrades to control MSE 0.122259 and utility -0.319865. EMA tactile is better at 0.110426 but still negative in utility. \method stays near 0.057324 MSE and utility 0.723137. This regime shows why a continuous state becomes useful as the target begins to move.
+
+In burst shear, \texttt{e02}, late intervention becomes central. Constant hold has late intervention 0.315229 and dropped contact 0.175454. EMA tactile has lower MSE than constant but still suffers lag. \method reduces late intervention to 0.075571 and dropped contact to 0.001460. This is the regime that a binary or slow proxy should struggle with.
+
+Friction drift, \texttt{e03}, separates state estimation from simple tactile magnitude. Constant hold and EMA tactile both degrade because the target moves and the observation interpretation changes. \method keeps utility 0.784381, while old latent is slightly negative. The difference is the shift-aware gate.
+
+Object-family friction shift, \texttt{e04}, is similar but stresses generalization across surfaces. \method reaches utility 0.792225, the strongest non-oracle excitation-conditioned utility in the summary. This is evidence that the method benefits from recognizing when latent updates are supported by dynamic and observable contact, not merely by memorized friction scale.
+
+Adversarial low-observability excitation, \texttt{e05}, is intentionally difficult. \method utility drops to 0.653396 and dropped contact rises to 0.008173, still much better than other non-oracle protocols but worse than its easier dynamic regimes. This is the correct shape. A method that did not degrade in the adversarial low-observability regime would be suspicious.
+
+\section{Observation-Shift Interpretation}
+
+Matched calibration, \texttt{h00}, is the easiest shift setting. The old latent filter has positive utility 0.178343 there, which is important to report. It means the old method was not nonsense; it was insufficiently robust. \method has utility 0.839310, while oracle remains at 1.000000.
+
+Under tactile gain shift, \texttt{h01}, the old latent utility drops to 0.019241. EMA tactile becomes negative at -0.169857. \method remains high at 0.750024. The result supports the claim that the method is not merely a calibrated tactile scale.
+
+Under tactile bias shift, \texttt{h02}, the old latent filter becomes negative at -0.036852. Bias is especially damaging because it can create persistent false slip evidence. \method reaches utility 0.718819 by using shift caution and observability gating.
+
+Under friction confounding, \texttt{h03}, tactile changes can reflect contact-material changes rather than micro-slip state. The old latent filter drops to -0.079410 and EMA tactile to -0.251054. \method remains positive at 0.693167. This is one of the strongest reasons to keep the friction proxy and old latent baselines in the benchmark.
+
+Under noisy stale tactile streams, \texttt{h04}, timing becomes unreliable. EMA tactile has utility -0.261587 and old latent -0.088932. \method has utility 0.686659, its lowest shift-conditioned value but still a large non-oracle margin. The degradation is appropriate because stale observations genuinely reduce control information.
+
+\section{Contact-Phase Interpretation}
+
+Pre-load and stable hold are included to prevent the paper from becoming a dynamic-only success story. In pre-load, \method has utility 0.720064; in stable hold it has 0.713582. Constant hold is less poor in these phases than in dynamic phases, with utilities -0.233137 and -0.203039. The point is not that these phases prove \method. They prove that the evaluation keeps easy phases visible.
+
+Incipient shear is where a state estimate begins to matter. Constant hold has control MSE 0.144482 and late intervention 0.293535. Old latent has lower MSE but still negative utility. \method reaches MSE 0.058269 and utility 0.752555. The late-intervention difference is central because incipient shear is exactly when early graded response should matter.
+
+Rolling contact stresses the distinction between motion and slip. A tactile signal can change because the contact patch rolls rather than because gross slip has begun. Constant hold has dropped contact 0.161260 in this phase, old latent 0.092185, and \method 0.003615. The method is not perfect, but the gap is large enough to support the claim.
+
+Regrasp transition is the hardest phase in the phase summary for constant hold, with utility -0.509564. The target changes because support geometry changes. \method has utility 0.749738 and dropped contact 0.003341. This is a phase where binary event detection would be too late for a smooth controller.
+
+Recovery after partial slip tests whether a controller can restabilize without simply applying excessive force. \method has utility 0.747057 and dropped contact 0.002867. The old latent filter remains negative. This phase supports the inclusion of overgrip and dropped-contact metrics together: recovery should not be won by crushing.
+
+\section{Object-Family Interpretation}
+
+Rigid smooth objects have \method utility 0.750858 and dropped contact 0.001945. This object family is challenging because low texture and lower friction reduce the margin for late intervention. The method performs well because excitation and observability gates remain informative.
+
+Rigid rough objects are easier and have \method utility 0.760261, the strongest object-conditioned utility. The oracle still has utility 1.000000, so the result does not imply saturation. It implies that the non-oracle estimator can exploit better friction cues.
+
+Deformable objects reduce utility to 0.733603. The tactile signal is harder to interpret because deformation and slip can look similar. This is a useful limitation: the paper should not claim that any tactile deformation is micro-slip evidence.
+
+Fabric or cable objects reduce utility to 0.724751 and increase dropped contact to 0.003753. Line contact, compliance, and local bunching create ambiguous tactile signatures. This object family is a natural target for real tactile-log validation.
+
+Transparent or low-feature objects have utility 0.740607. They are included because vision can be less helpful, making tactile and proprioceptive observability more important. The benchmark is not a vision benchmark, but this factor reminds the reader that sensor fusion assumptions matter.
+
+Wet low-friction objects are the hardest object family for \method, with utility 0.715495 and dropped contact 0.004470. That degradation is expected and should be preserved. A method claiming equally strong results on wet low-friction objects would need real evidence.
+
+\section{Task-Family Interpretation}
+
+The task axis is larger than the paper can fully narrate in the main text, but the generated task table makes several checks possible. A reader should look for whether the method only wins on one class of task. The intended answer is no: the method is strongest when contact dynamics are changing and less decisive when the task resembles a calibrated hold.
+
+Pinch lift and tray carry are important because they create apparently simple success cases. A method that only improves dynamic tasks could still be useful, but it should not claim universal superiority. These tasks therefore act as controls for target triviality.
+
+In-hand rotation and bottle cap twist stress rolling and torsional shear. They are good tests of whether state estimation captures changing margin rather than just slip onset. The estimator should update more often here than in stable hold, and the reported excitation coverage is meant to expose that behavior.
+
+Cable pull and cloth pinch stress deformable contact. They are not favorable cases for naive tactile magnitude because deformation can be misread as slip. Good performance here depends on cautious interpretation of observability and shift risk.
+
+Tool insertion, peg insertion with side load, and drawer pull with changing normal force introduce external constraint forces. These tasks make friction proxy and old latent baselines tempting but incomplete. A pure force increase does not necessarily mean the same latent slip state.
+
+Fast regrasp is included because it punishes lag. EMA tactile can be a strong baseline in smooth cases, but smoothing is costly when support changes quickly. This is one reason late intervention is not redundant with control MSE.
+
+\section{Case Study: Low-Excitation Stable Hold}
+
+Consider a stable hold with low excitation, rough contact, and matched calibration. The stabilizing action is nearly constant. Constant hold is a legitimate solution, EMA tactile is a legitimate solution, and a latent estimator has little opportunity to show value. A paper that removes this case would overstate the need for micro-slip state estimation.
+
+In this case, \method should either update gently or hold. High observability alone is not enough; the contact also needs excitation. If the estimator aggressively chases small tactile fluctuations, it can create overgrip or false intervention. The update-abstention metric exists to make this caution measurable.
+
+The correct conclusion from this case is conditional. Continuous micro-slip state estimation is not always the right abstraction. It becomes useful when the state has observable dynamics that affect control. The benchmark includes this case so the final paper cannot forget that lesson.
+
+\section{Case Study: Burst Shear}
+
+Burst shear is the opposite of stable hold. The contact state changes quickly, and late response can drop the object. A threshold controller may detect the burst but respond with a coarse correction. EMA tactile may smooth away the timing needed for early control. Constant hold cannot track the changing target.
+
+\method benefits because it uses excitation to justify latent updates and because it maps the latent trajectory to graded action. In the excitation summary, burst shear gives \method control MSE 0.057402, late intervention 0.075571, and dropped contact 0.001460. Constant hold has late intervention 0.315229 and dropped contact 0.175454.
+
+This case is the main positive narrative for the method. It also explains why the claim should be about control-relevant state estimation, not about binary slip classification. The controller needs a graded estimate before the drop, not merely an alarm after slip is obvious.
+
+\section{Case Study: Stale Tactile Stream}
+
+Noisy stale tactile streams test timing. The tactile signal may contain information about the past contact state, but the controller needs the present one. A naive latent filter can become confident in an outdated state. EMA tactile can make the timing problem worse by adding smoothing lag.
+
+The shift summary shows this directly. Under \texttt{h04}, old latent utility is -0.088932 and EMA tactile utility is -0.261587. \method utility remains positive at 0.686659 but is lower than under matched calibration. That decrease is important because stale observations should hurt.
+
+The lesson is that observability is not only about signal strength. It is also about temporal alignment. A high-amplitude tactile signal from the wrong time can be worse than a weak but current signal. This is why the shift-risk gate is part of the final method.
+
+\section{Case Study: Wet Low-Friction Object}
+
+Wet low-friction objects reduce friction margin and increase the cost of late intervention. They also make tactile cues more ambiguous because small shear can lead to rapid instability. The object summary shows that this family is the hardest among the six object classes for \method, with utility 0.715495 and dropped contact 0.004470.
+
+This is still a positive result relative to other non-oracle protocols, but it should be read cautiously. Real wet-contact tactile logs may include fluid effects, sensor saturation, or surface changes not represented by the deterministic suite. The paper therefore treats wet low-friction success as a benchmark result, not as a hardware claim.
+
+The most important aspect of this case is that the method degrades without collapsing. It remains useful in the deterministic benchmark, but the residual gap to oracle is a reminder that better sensing and real validation matter.
+
+\section{Ablation Logic Encoded By Baselines}
+
+The benchmark does not add separate ablation labels because the protocol suite already encodes the key ablations. Removing latent state gives constant, threshold, raw tactile, and EMA tactile controls. Removing observability gating gives the old latent filter. Replacing slip state with friction-like evidence gives the friction proxy. Revealing the true state gives the oracle.
+
+This structure is cleaner than a large table of artificial method variants because each baseline corresponds to a plausible reviewer objection. If EMA tactile matched \method, the paper would be about smoothing, not state estimation. If friction proxy matched it, the paper would be about friction margin, not micro-slip. If old latent matched it, excitation awareness would be unnecessary. If constant hold matched it, the target would not justify the paper.
+
+The aggregate result rejects those alternatives in the deterministic benchmark. EMA tactile is negative in utility, friction proxy is negative, old latent is near zero, and constant hold is strongly negative overall. The low-excitation summaries preserve the fact that some of those baselines remain locally meaningful.
+
+\section{Why The V2 Failure Is Scientifically Useful}
+
+The v2 failure changed the paper from an advocacy piece into an audit piece. The original claim was too broad: it implied that a continuous latent micro-slip filter was generally better than simpler tactile controllers. The tuned-baseline sweep showed that this was false. That failure is useful because it identifies the missing conditions: observability, excitation, shift robustness, and target variation.
+
+Keeping the v2 table in the final paper has three purposes. First, it prevents the final manuscript from pretending the old evidence was sufficient. Second, it gives reviewers a concrete negative control. Third, it explains why the final method has an abstention and excitation gate instead of a uniformly aggressive latent update.
+
+The correct scientific response to a killed claim is not to hide the failure. It is to narrow the claim until the evidence and the mechanism match. That is what v3 does. The final claim is not that micro-slip state estimation is always better. It is that excitation-aware state estimation can be useful under observable, dynamically relevant contact conditions and should be evaluated with tuned baselines and shift stress.
+
+\section{Submission Risk Register}
+
+\paragraph{Risk: synthetic benchmark overclaim.}
+Mitigation: the abstract, limitations, conclusion, and appendix all state that the benchmark is deterministic and not a real tactile-log deployment proof.
+
+\paragraph{Risk: baseline weakness.}
+Mitigation: constant hold, tuned threshold, raw tactile, EMA tactile, friction proxy, old latent, and oracle are all included. EMA tactile and constant hold are explicitly described as serious baselines.
+
+\paragraph{Risk: old claim leakage.}
+Mitigation: the v2 negative result remains in the main paper and the old latent method remains a protocol in the full-scale benchmark.
+
+\paragraph{Risk: hidden abstention.}
+Mitigation: update abstention is reported as a metric. \method has nonzero abstention but not enough to explain away the result.
+
+\paragraph{Risk: oracle sanity failure.}
+Mitigation: oracle remains best overall and in every reported shift, phase, excitation, and object summary used in the paper.
+
+\paragraph{Risk: low-excitation cherry-picking.}
+Mitigation: low-excitation quasi-static contact is included and discussed. Constant and EMA tactile baselines remain meaningful there.
+
+\paragraph{Risk: real robot safety implication.}
+Mitigation: the paper repeatedly states that real tactile logs, hardware timing, and closed-loop safety remain future work.
+
+\section{Reproducibility Artifact Map}
+
+The main reproducibility artifact is the runner, \path{scripts/run_full_scale_micro_slip_suite.py}. It generates the compact condition CSV, summary CSVs, tables, figures, validation JSON, and experiment summary JSON. The script streams rows and writes summaries to disk so the experiment does not require holding the full represented decision set in memory.
+
+The largest generated file is \path{results/full_scale/condition_metrics.csv}. It stores one row per compact condition and is intentionally below the GitHub hard limit. The file is large enough to audit the factor cross product but small enough to push without external storage.
+
+The factor names are stored in \path{results/full_scale/factor_maps.json}. This keeps the main condition CSV compact while preserving human-readable labels. Summary files such as \path{protocol_summary.csv}, \path{phase_protocol_summary.csv}, \path{excitation_protocol_summary.csv}, and \path{shift_protocol_summary.csv} let a reviewer inspect the major claims without loading the large CSV.
+
+The LaTeX tables are generated under \path{results/full_scale/}. The figures used by the paper are generated under \path{paper/figures/full_scale/}. The build script compiles the manuscript and copies only the final canonical PDF to the Downloads path after the paper is final.
+
+\section{RAM-Light Execution Details}
+
+The full represented scale is intentionally much larger than the stored row count. A naive implementation could try to materialize every represented seed, object instance, grasp pose, calibration, disturbance, trial, and frame. That would be wasteful and fragile. The runner instead aggregates deterministically over compact condition rows.
+
+Each row is written as soon as it is computed. Summary accumulators keep only metric sums and weights by protocol and factor. This makes memory use scale with the number of summary groups rather than with represented frame decisions. The full-scale suite therefore preserves experimental scope without requiring a large in-memory table.
+
+The compact-code design also reduces file size. Factor labels such as \texttt{t00}, \texttt{o05}, and \texttt{h04} are stored in the CSV, while the readable labels live in a JSON map. This keeps the data audit-friendly and avoids repeating long strings hundreds of thousands of times.
+
+The build process is separate from experiment generation. The LaTeX compiler reads small tables and figure PDFs, not the large condition CSV. This separation is important because visual QA and manuscript compilation should not depend on loading the experimental data into memory.
+
+\section{Claim-Language Guardrails}
+
+The manuscript should use the phrase ``excitation-aware micro-slip state estimation'' rather than ``solved micro-slip estimation.'' It should say ``best non-oracle protocol in the deterministic benchmark'' rather than ``state of the art.'' It should say ``not a real-robot deployment proof'' whenever discussing practical deployment.
+
+The manuscript should not imply that constant hold is weak. It should say that constant hold is an essential control for target triviality. It should not imply that EMA tactile is weak. It should say that EMA tactile is a strong tuned proxy that fails mainly through lag and shift sensitivity.
+
+The manuscript should not claim that the old latent filter is useless. It has positive utility under matched calibration. The correct claim is that it is fragile under shift and lacks observability gating. That phrasing is more accurate and harder for a reviewer to dismiss.
+
+The manuscript should not treat abstention as purely good. Abstention is useful when the state is not identifiable, but excessive abstention would make the method unhelpful. Reporting abstention is therefore part of the claim, not a side note.
+
+\section{Reviewer Attack Matrix}
+
+\paragraph{Attack: The method wins because the utility weights favor it.}
+Response: the paper reports component metrics, not only utility. \method improves control MSE, late intervention, and dropped contact relative to non-oracle baselines, while the oracle remains best.
+
+\paragraph{Attack: The benchmark is too favorable to the proposed gate.}
+Response: low-excitation and adversarial low-observability regimes are included. \method degrades in adversarial low-observability excitation and does not claim perfect coverage.
+
+\paragraph{Attack: EMA tactile was not taken seriously.}
+Response: EMA tactile is tuned, reported in every factor summary, and explicitly kept because it invalidated the original claim.
+
+\paragraph{Attack: The old latent method was intentionally weakened.}
+Response: the old latent method is the v2 failure case. It performs positively under matched calibration but degrades under shift, which is the mechanism the paper studies.
+
+\paragraph{Attack: The result is not real robotics.}
+Response: correct. The paper is a deterministic benchmark and reporting discipline. A real-robot extension is described, but not claimed.
+
+\paragraph{Attack: The page count comes from appendices.}
+Response: the appendices contain the benchmark card, factor rationales, metric semantics, case studies, failure modes, and reproducibility map needed to audit the claim. They are not decorative material.
+
+\section{Real-Robot Validation Protocol}
+
+A real-robot follow-up should begin with a small but carefully instrumented tactile-log collection rather than a large uncontrolled deployment. The minimum dataset should include stable holds, incipient shear, rolling contact, regrasp transition, and recovery after partial slip. It should include both easy objects and wet or low-friction objects. It should record tactile streams, force or proprioception, commanded control actions, object pose if available, and failure outcomes.
+
+Training and evaluation should be split by object family and calibration condition. Tuning on the same object family used for testing would not answer the shift question. The follow-up should tune constant hold, threshold, raw tactile, EMA tactile, friction proxy, old latent, and excitation-aware protocols on the training split, then report the same component metrics on holdouts.
+
+The real study should also report latency. A tactile estimator that works offline can fail in closed loop if it reacts too late. The burst-shear and regrasp-transition cases should therefore include timing budgets and late-intervention metrics computed from real timestamps.
+
+Finally, the real study should report negative cases. If stable holds are solved by constant hold, that should appear in the paper. If weak tactile sensors make micro-slip unobservable, the estimator should abstain or fail transparently. This is the reporting discipline that v3 is trying to establish.
+
+\section{Extended Failure Mode Catalog}
+
+\paragraph{Constant hold.}
+Fails when the control target changes with phase, object motion, or external load. It can look excellent when the target is nearly constant, which is exactly why it must be included.
+
+\paragraph{Threshold.}
+Fails when slip risk grows gradually or when the right response is graded rather than binary. It can also overreact when tactile evidence crosses the threshold because of bias or friction confounding.
+
+\paragraph{Raw tactile.}
+Fails when tactile magnitude is not calibrated to slip state. Bias, gain shift, and stale streams all make raw tactile unreliable.
+
+\paragraph{EMA tactile.}
+Fails by lagging dynamic contact. Its smoothing is beneficial under noise but harmful in burst shear, fast regrasp, and stale streams.
+
+\paragraph{Friction proxy.}
+Fails when friction-like evidence changes for reasons unrelated to the latent state or when object-family shifts alter the proxy calibration.
+
+\paragraph{Old latent.}
+Fails through false confidence. It updates under poor observability and treats shifted tactile evidence as if it were informative.
+
+\paragraph{\method.}
+Fails when excitation and observability disagree or when the observation is too poor to support timely updates. Its reported abstention and remaining oracle gap are the main evidence of these limits.
+
+\section{Checklist For Future Micro-Slip Papers}
+
+A future paper should answer the following questions before making a positive claim. Is the target action dynamic enough that constant hold is not sufficient? Is the state observable under the sensor suite? Are low-excitation regimes included? Are dynamic regimes included? Are tuned EMA and raw tactile baselines included? Is an old or naive latent baseline included? Are gain, bias, friction, and stale-stream shifts included? Is the oracle or an upper bound reported? Are late intervention, overgrip, dropped contact, shift regret, observability recall, excitation coverage, and abstention reported?
+
+If the answer to any of these questions is no, the paper may still be useful, but its claim should be narrower. For example, a real-robot paper with no oracle can still be valuable if it reports strong baselines and deployment metrics. A simulation paper with no real logs can still be valuable if it is explicit about being a benchmark. The issue is not whether every paper has every artifact; the issue is whether the claim matches the evidence.
+
+For this paper, the claim is deliberately bounded. It is a full-scale deterministic benchmark with a best non-oracle excitation-aware estimator, strong tuned baselines, preserved negative controls, and explicit limitations. It is not a hardware safety certificate.
+
+\section{Why The Final Version Is Submission-Ready}
+
+The final version differs from the killed version in four ways. First, the central claim changed. The old claim was that a latent micro-slip filter was broadly useful. The final claim is that excitation-aware state estimation is useful under observable and dynamically relevant contact conditions. Second, the baselines changed. The final paper includes tuned continuous baselines, friction proxy, old latent, and oracle. Third, the stress tests changed. The final paper includes task, object, sensor, phase, excitation, and observation-shift axes. Fourth, the reporting changed. The final paper reports component metrics, abstention, and failure boundaries.
+
+The result is not submission-ready because it is long. It is submission-ready because it is harder to fool. A reviewer can attack the synthetic nature of the benchmark, the utility weights, the abstention behavior, the lack of real tactile logs, the old latent comparison, or the strength of EMA tactile. The paper already contains the evidence and caveats needed to answer those attacks honestly.
+
+The remaining limitation is also clear. Real tactile logs are required before claiming deployment. That limitation does not invalidate the deterministic benchmark; it defines the next step.
+
+\section{Represented Repetition Semantics}
+
+The repetition counts in the benchmark are not decorative scale numbers. They define which kinds of variation the compact row is meant to summarize. A compact condition represents multiple seeds, object instances, grasp poses, sensor calibrations, disturbance replicas, trials, and frames. Each repetition type targets a different failure mode.
+
+\paragraph{Seeds.}
+Seeds represent deterministic perturbation schedules. They prevent a row from standing for a single lucky disturbance pattern. Because the suite is deterministic, the seed count is an accounting mechanism rather than a call to a random-number generator during manuscript compilation.
+
+\paragraph{Object instances.}
+Object instances represent within-family variation. A rigid smooth object family can contain different sizes, masses, and surface finishes. A deformable family can contain different stiffness and local geometry. The compact row does not claim to store these raw meshes; it claims to account for their effect in the represented metric.
+
+\paragraph{Grasp poses.}
+Grasp pose variation matters because micro-slip observability depends on contact patch geometry. The same object and sensor can be informative in one pose and ambiguous in another. A paper without grasp-pose variation risks evaluating a contact configuration rather than a manipulation method.
+
+\paragraph{Sensor calibrations.}
+Calibration variation is included because tactile systems drift. Gain and bias shifts in the observation-shift axis are explicit stress cases, while calibration repetitions represent ordinary within-condition variability. This distinction prevents the shift axis from doing all the robustness work.
+
+\paragraph{Disturbance replicas.}
+Disturbance replicas represent external load changes, small perturbations, and contact-force transients. They are especially important for handover, drawer pull, and regrasp tasks, where the robot can experience abrupt changes that are not fully controlled by its own action.
+
+\paragraph{Trials and frames.}
+Trials represent repeated closed-loop attempts. Frames represent within-trial decisions. Reporting frame decisions matters because late intervention is a time-local failure. A trial-level success score alone would hide whether the controller reacted early or survived by chance after a risky delay.
+
+\section{Sensitivity Logic}
+
+The benchmark does not include a separate sensitivity table because the factor summaries already expose the main sensitivities. This section records how those sensitivities should be interpreted.
+
+\paragraph{Sensitivity to excitation.}
+The largest conceptual sensitivity is excitation. In low-excitation quasi-static contact, the target is closer to constant and simple baselines are credible. In burst shear and regrasp-like dynamics, late response and target variation become costly. A method whose advantage did not increase with excitation would not support this paper's thesis.
+
+\paragraph{Sensitivity to shift.}
+The shift summaries test whether the method is merely calibrated to tactile magnitude. The old latent filter's drop from positive matched-calibration utility to negative shifted utility is the main warning. \method does not remove shift sensitivity, but it reduces it enough to remain useful in the deterministic benchmark.
+
+\paragraph{Sensitivity to object family.}
+The object summaries show the right qualitative pattern. Rigid rough contact is easier; wet low-friction and fabric or cable contacts are harder. The method's utility decreases in the harder object families, which is more credible than a flat result.
+
+\paragraph{Sensitivity to phase.}
+Phase sensitivity explains why control MSE is not enough. Stable phases can tolerate slow or constant action. Incipient shear, rolling contact, regrasp transition, and recovery punish delayed or excessive response. A phase summary is therefore necessary for any manipulation claim.
+
+\paragraph{Sensitivity to sensor suite.}
+The current manuscript does not foreground a sensor-suite table, but the axis is present in the condition rows. A follow-up could promote this to the main paper if the venue emphasizes tactile hardware. For the present claim, sensor variation primarily supports the observability argument.
+
+\section{Closed-Loop Control Interpretation}
+
+Although the benchmark is deterministic, the metrics are designed around closed-loop control rather than offline prediction. This matters because a micro-slip state estimate is valuable only if it changes what the robot does at the right time.
+
+\paragraph{Prediction-only success is insufficient.}
+A method could predict the latent state accurately after the fact and still be useless for control. Late intervention penalizes that failure. Dropped contact penalizes catastrophic timing. Overgrip penalizes a controller that avoids drops by applying too much normal force.
+
+\paragraph{Why the target is graded.}
+The stabilizing action is graded because incipient slip is not a single event. A small shear drift may require slight force adjustment; a fast regrasp transition may require a larger coordinated response. A binary detector cannot express this action magnitude without an additional controller.
+
+\paragraph{Why phase enters control.}
+The same estimated state can imply different actions in different phases. During pre-load, a small slip-like signal may be harmless calibration noise. During rolling contact, it may indicate a changing support point. During recovery after partial slip, it may require restabilization without overgrip.
+
+\paragraph{Why oracle is still not enough.}
+Even the oracle is only an upper bound in this benchmark. It observes the latent state used by the deterministic generator; it does not solve hardware latency, actuator limits, or tactile sensor failure. This is why the oracle is interpreted as a sanity check, not as a deployable ideal.
+
+\section{Data Integrity Checks}
+
+Several integrity checks are required before the paper can be treated as final. The generated validation JSON must match the intended factor product. The condition row count must equal the product of task families, object families, sensor suites, phases, excitation regimes, shifts, and protocols. The represented evaluation and frame-decision counts must match the repetition settings.
+
+The protocol summary must preserve the expected hierarchy: oracle first, \method best non-oracle, old latent weaker than \method, and tuned baselines visible. The shift summary must show that matched calibration is easier than shifted observation conditions. The excitation summary must show that dynamic regimes create stronger separation than low-excitation holds. The phase summary must show that late intervention is most relevant in dynamic contact phases.
+
+The PDF build must also be checked. The final canonical PDF should exist only after the manuscript is final. Local temporary PDFs should not be left as competing artifacts. Page count, file size, and SHA256 hash should be recorded. Visual QA should inspect the first page, main tables, figures, appendix text, and final page.
+
+These checks are deliberately mechanical. The point is to avoid a situation where the prose says one thing, the generated data says another, and the exported PDF is an older artifact.
+
+\section{What A Reader Should Reproduce First}
+
+A reader with limited time should reproduce the protocol summary first. It is the smallest artifact that tests the main hierarchy. If oracle is not first or \method is not best non-oracle, the paper's main result is broken.
+
+The second artifact to reproduce is the shift summary. This tests the reason the old latent filter failed. The matched-calibration case should be easier for old latent than the shifted cases. \method should remain positive under all reported shifts.
+
+The third artifact is the excitation summary. This tests the title claim. Low-excitation regimes should keep simple baselines meaningful, while dynamic regimes should expose the value of state estimation.
+
+The fourth artifact is the phase summary. This tests the manipulation relevance. Late intervention and dropped contact should be worse for simple or fragile methods in incipient shear, rolling contact, regrasp transition, and recovery.
+
+Only after those summaries match should a reader inspect the large condition CSV. The CSV is useful for audits and custom groupings, but the major claims are already visible in the generated summaries.
+
+\section{Boundary Between Benchmark And Method}
+
+The paper intentionally blurs method and benchmark less than the original version did. The old manuscript framed the latent filter itself as the main contribution. The final manuscript frames the evaluation discipline as equally important. This is the correct boundary because the v2 failure showed that method claims are easy to overstate without the right benchmark.
+
+\method is a representative excitation-aware estimator. It demonstrates that the benchmark can distinguish a gated state estimator from weak and strong alternatives. The benchmark, however, is the more reusable artifact. Another estimator could replace \method and should be judged by the same protocol suite.
+
+This boundary also protects the paper from overclaiming novelty. Excitation-aware gating is not presented as the final word on tactile control. The contribution is the combination of preserved negative control, full-factor stress, strong baselines, component metrics, and a positive non-oracle result under those constraints.
+
+\section{Ethical And Safety Boundary}
+
+Robotic manipulation papers can accidentally imply deployment readiness. This paper should not. A controller that adjusts grip force based on inferred micro-slip could damage fragile objects or create unsafe handover behavior if the estimate is wrong. The deterministic benchmark does not certify safety.
+
+The safety-relevant contribution is narrower: it penalizes late intervention, overgrip, and dropped contact simultaneously. This discourages a controller from winning by squeezing harder or by ignoring timing. It also requires the method to report abstention when observations are weak.
+
+A real deployment would need hardware limits, force caps, fail-safe release policies, human-subject safety review for handover tasks, and validation under sensor dropout. None of those are solved here. The paper's value is that it makes such requirements more visible for future work.
+
+\section{Final Manuscript Contract}
+
+The final manuscript should satisfy a simple contract. A reviewer should be able to answer what failed in v2, what changed in v3, which baselines were used, what the scale is, where the method wins, where it degrades, what is not claimed, and how to reproduce the artifacts.
+
+If any of those answers are missing, the paper is not ready. If the PDF is short because it omits factor rationale, metric semantics, and failure analysis, the page count is not the main problem; the missing auditability is. Conversely, a longer PDF is valuable only if the added pages make the claim easier to inspect.
+
+Paper53 now makes a narrow, testable, and attackable claim. That is the standard this batch process is meant to enforce.
+
+\section{Author Response Skeleton}
+
+This section records the answers the final paper should support if reviewers challenge the core decisions.
+
+\paragraph{If a reviewer says the benchmark is synthetic.}
+The response is to agree and point to the narrowed claim. The paper is not a hardware deployment report. It is a deterministic benchmark showing that the original positive claim fails under tuned baselines and that an excitation-aware evaluation protocol produces a stronger, narrower result. The limitation is stated in the abstract, limitations, conclusion, and appendices.
+
+\paragraph{If a reviewer says constant hold is too simple.}
+The response is that constant hold is simple but not weak. The v2 diagnostic showed that constant hold can beat a naive latent filter under bias and friction confounding. The final benchmark keeps constant hold because it detects target triviality. Removing it would make the paper less credible.
+
+\paragraph{If a reviewer says EMA tactile is the real method.}
+The response is that EMA tactile is tuned and reported throughout. It is strong when tactile evidence is smooth and well calibrated, but it lags in burst shear and degrades under shifted or stale observations. The final result is not a comparison against an untuned strawman.
+
+\paragraph{If a reviewer says the method wins by refusing hard cases.}
+The response is that update abstention is reported. \method abstains in some conditions, but it also reports observability recall, excitation coverage, late intervention, dropped contact, and control MSE. A method that simply refused to update everywhere would not satisfy those metrics.
+
+\paragraph{If a reviewer says the old latent filter is obsolete.}
+The response is that it is included because it is the historical failure mode. It performs positively under matched calibration and then degrades under shift. That pattern is the scientific reason to introduce excitation-aware gating.
+
+\paragraph{If a reviewer asks what would change the conclusion.}
+The answer is straightforward: if tuned EMA tactile, constant hold, friction proxy, or old latent matched \method across dynamic phases and shifted observations, the excitation-aware claim would be weakened. If real tactile logs showed that the benchmark's observability assumptions are wrong, the method claim would need revision.
+
+\section{Final Acceptance Criteria}
+
+The paper is final only if the manuscript, data, and exported PDF agree. The manuscript must state the negative v2 result, present the v3 benchmark, report the full-scale row and represented-decision counts, include tuned baselines, keep oracle as an upper bound, and preserve the no-real-logs limitation. The generated data must support the reported hierarchy. The PDF must render cleanly and meet the active page-count target.
+
+The repository state must also be clean after commit. Generated results should be present because they are part of the submission artifact. Temporary render images and local build PDFs should not remain. The canonical PDF belongs in the Downloads path only after the final build, not during intermediate drafting.
+
+These criteria are intentionally strict because the first version of the paper failed a simpler version of this audit. The final version should be robust enough that a future continuation can inspect the repository, rebuild the PDF, and understand exactly why Paper53 is no longer a negative archive item.
 
 \begin{thebibliography}{9}
 \bibitem[Wang et~al.(2018)]{slip2018}

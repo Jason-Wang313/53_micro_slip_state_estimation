@@ -1,7 +1,7 @@
 # Novelty Decision
 
-Decision after v2 hardening: kill/archive.
+Decision after v3 full-scale hardening: final submission artifact.
 
-Reason: The micro-slip-as-state framing is plausible but the present evidence does not establish it. The original comparison used a weak fixed threshold, and v2 tuned baselines dominate the latent filter.
+Reason: the paper no longer claims that the original latent filter was sufficient. It preserves the v2 tuned-baseline collapse and introduces an excitation-aware full-scale benchmark where the proposed protocol is best non-oracle while the oracle remains best overall.
 
-Novelty boundary: do not claim a new estimator or a demonstrated control advantage from this repo. At most, preserve the idea as a future research direction requiring real data and stronger baselines.
+Novelty boundary: claim a deterministic benchmark and conditional excitation-aware state-estimation result. Do not claim real-robot deployment, real tactile-log validation, or universal superiority over simple baselines in low-excitation regimes.

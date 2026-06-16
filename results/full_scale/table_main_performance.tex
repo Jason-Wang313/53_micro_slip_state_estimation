@@ -1,0 +1,14 @@
+\begin{tabular}{lrrrrrrrr}
+\toprule
+Protocol & MSE & State MAE & Late & Overgrip & Drop & Obs. recall & Abstain & Utility \\
+\midrule
+Constant hold & 0.133 & 0.256 & 0.279 & 0.032 & 0.148 & 0.000 & 0.000 & -0.396 \\
+Tuned threshold & 0.117 & 0.272 & 0.260 & 0.153 & 0.125 & 0.174 & 0.000 & -0.310 \\
+Raw tactile linear & 0.126 & 0.286 & 0.210 & 0.084 & 0.122 & 0.175 & 0.000 & -0.237 \\
+EMA tactile linear & 0.117 & 0.254 & 0.249 & 0.071 & 0.111 & 0.216 & 0.000 & -0.187 \\
+Friction proxy & 0.113 & 0.252 & 0.187 & 0.112 & 0.094 & 0.229 & 0.000 & -0.075 \\
+Old latent Kalman & 0.112 & 0.252 & 0.214 & 0.084 & 0.085 & 0.379 & 0.000 & -0.002 \\
+Excitation-aware state & 0.058 & 0.186 & 0.072 & 0.052 & 0.003 & 0.590 & 0.132 & 0.738 \\
+Oracle latent state & 0.021 & 0.121 & 0.022 & 0.016 & 0.000 & 0.990 & 0.000 & 1.000 \\
+\bottomrule
+\end{tabular}
