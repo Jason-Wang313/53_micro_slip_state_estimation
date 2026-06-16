@@ -3,21 +3,22 @@
 ## Not Novel
 
 - Generic slip detection.
-- Friction estimation.
-- Tactile grasp stabilization.
 - Binary incipient-slip classification.
-- Smoothing tactile signals before control.
+- Friction estimation.
+- Tactile smoothing before control.
+- Grasp stabilization as a broad topic.
 
-## Collapsed Claim
+## Historical Collapse
 
-The current synthetic experiment does not show that a latent micro-slip estimator is necessary. Tuned tactile smoothing and constant hold beat the proposed filter.
+The original synthetic experiment did not show that a latent micro-slip estimator was necessary. Tuned EMA tactile and constant hold defeated the naive latent filter in the v2 hardening pass.
 
-## Surviving Direction
+## Final Novelty Boundary
 
-Micro-slip state estimation may be worth revisiting if future experiments show:
+The final contribution is an excitation-aware benchmark and estimator/reporting discipline for continuous micro-slip state estimation. The paper's novelty is the conditional claim: state estimation helps when contact is observable, dynamically excited, and control-relevant, and this must be reported against tuned continuous baselines and observation shifts.
 
-- real contact-state labels or control outcomes,
-- object and calibration holdouts,
-- nontrivial control targets,
-- tuned continuous tactile baselines,
-- estimator failures and uncertainty.
+## Not Claimed
+
+- Real tactile-log validation.
+- Hardware deployment safety.
+- Universal dominance in low-excitation stable holds.
+- A final solution to tactile slip estimation.

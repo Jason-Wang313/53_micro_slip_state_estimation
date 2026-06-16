@@ -1,17 +1,21 @@
 # Reviewer Attacks
 
-## Attack: The threshold baseline is weak by construction.
+## Attack: The old threshold baseline was weak.
 
-Sustained. A tuned threshold gets 0.00040 MSE on the matched generator, far below the manuscript's fixed-threshold 0.02772 and below the latent filter's 0.01453.
+Sustained historically. The final paper keeps the v2 failure and adds tuned threshold, raw tactile, EMA tactile, constant hold, friction proxy, old latent, excitation-aware, and oracle protocols.
 
-## Attack: The controller target is nearly constant.
+## Attack: The controller target was nearly constant.
 
-Sustained. Constant hold reaches 0.00058 MSE and beats the latent filter in every v2 scenario.
+Sustained historically. The final v3 benchmark includes low-excitation holds as controls and dynamic regimes where target variation makes late intervention costly.
 
-## Attack: The latent filter is not robust to observation shift.
+## Attack: The latent filter was not robust to observation shift.
 
-Sustained. Under tactile bias shift, latent filter MSE rises to 0.06434 while constant hold remains 0.00058. Under friction confounding, latent filter MSE is 0.05102.
+Sustained historically. The final paper keeps the old latent filter as a baseline and adds gain shift, bias shift, friction confounding, and stale tactile streams.
 
-## Attack: This is not enough evidence for a submission.
+## Attack: The method wins by abstaining.
 
-Sustained. Decision: kill/archive.
+Addressed. Update abstention is reported; excitation-aware abstention is 0.132359, while observability recall, excitation coverage, late intervention, dropped contact, and control MSE are also reported.
+
+## Attack: This is not real robot evidence.
+
+Sustained as a limitation. The paper explicitly claims a deterministic benchmark and reporting discipline, not hardware deployment safety.

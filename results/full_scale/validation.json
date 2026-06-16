@@ -1,0 +1,22 @@
+{
+  "paper": 53,
+  "status": "final_v3_full_scale",
+  "canonical_pdf": "C:/Users/wangz/Downloads/53.pdf",
+  "pdf_pages": 25,
+  "pdf_size_bytes": 313090,
+  "pdf_sha256": "20EA1D8D3CF3DEF2C46920EF74A971C6C7677F01633211930DEBCA2775141BB7",
+  "condition_rows": 518400,
+  "represented_evaluations": 171694080000,
+  "represented_frame_decisions": 13735526400000,
+  "best_non_oracle_protocol": "excitation_aware",
+  "oracle_utility": 1.0,
+  "excitation_aware_utility": 0.737596,
+  "old_latent_utility": -0.001522,
+  "latex_log_clean": true,
+  "visual_qa_pages": [1, 5, 7, 15, 20, 25],
+  "limitations": {
+    "real_tactile_logs": false,
+    "hardware_deployment_claim": false,
+    "deterministic_benchmark": true
+  }
+}

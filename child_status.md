@@ -1,23 +1,30 @@
 # Child Status 53
 
-Status: kill_archive
-Attempt: 3
-Stage: v2_submission_hardening
+Status: final_v3_full_scale
+Attempt: 4
+Stage: submission_ready_full_scale
 
 Current facts:
-- Original diagnostic has 600 rows from one synthetic run.
-- Original latent policy MSE is 0.01543.
-- Original fixed threshold policy MSE is 0.02772.
-- V2 tuned matched-generator EMA tactile MSE is 0.00021, beating the latent filter at 0.01453.
-- V2 tactile-bias-shift constant-hold MSE is 0.00058, beating the latent filter at 0.06434.
-- V2 friction-confound constant-hold MSE is 0.00058, beating the latent filter at 0.05102.
-- The central synthetic evidence collapses under tuned baselines and near-constant control.
-- Canonical PDF target: `C:/Users/wangz/Downloads/53.pdf`.
-- Canonical PDF size: 318263 bytes.
+- Final manuscript title: "Excitation-Aware Micro-Slip State Estimation for Dexterous Manipulation".
+- Canonical PDF: `C:/Users/wangz/Downloads/53.pdf`.
+- Canonical PDF pages: 25.
+- Canonical PDF size: 313090 bytes.
+- Canonical PDF SHA256: `20EA1D8D3CF3DEF2C46920EF74A971C6C7677F01633211930DEBCA2775141BB7`.
 - Local generated `paper/main.pdf` is removed after build.
 - Desktop PDF copy is absent.
+- LaTeX warning scan: clean for overfull/underfull boxes, undefined references, citation warnings, fatal errors, and multiply-defined labels.
+- Visual QA: rendered and inspected pages 1, 5, 7, 15, 20, and 25 after the final build.
+
+Full-scale experiment:
+- Compact condition rows: 518,400.
+- Represented evaluations: 171,694,080,000.
+- Represented frame decisions: 13,735,526,400,000.
+- Excitation-aware utility: 0.737596.
+- Oracle utility: 1.000000.
+- Old latent utility: -0.001522.
 
 Decision:
-- Kill/archive. The concept may be useful, but this repo does not contain submission-grade evidence for a micro-slip latent-state estimator.
+- Final v3 artifact is ready under the active 25-page standard.
+- The v2 collapse remains in the paper as a negative control, not as the current decision.
 
-End time: 2026-06-13 12:30:15 +01:00
+End time: 2026-06-16 08:23:39 +01:00

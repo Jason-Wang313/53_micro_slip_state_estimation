@@ -1,14 +1,28 @@
 {
   "paper": 53,
-  "decision": "kill/archive",
+  "decision": "final_v3_full_scale",
   "canonical_pdf": "C:/Users/wangz/Downloads/53.pdf",
-  "key_result": "The latent filter loses to tuned constant, threshold, raw tactile, and EMA tactile baselines; matched-generator latent MSE is 0.01453 versus EMA tactile 0.00021.",
-  "v2_metrics": {
-    "matched_latent_filter_mse": 0.014533849313268168,
-    "matched_ema_tactile_mse": 0.0002127549741055893,
-    "bias_shift_latent_filter_mse": 0.0643350644467786,
-    "bias_shift_constant_hold_mse": 0.0005760030736931829,
-    "friction_confound_latent_filter_mse": 0.05101683801981229,
-    "friction_confound_constant_hold_mse": 0.0005760030736931829
-  }
+  "pages": 25,
+  "pdf_size_bytes": 313090,
+  "sha256": "20EA1D8D3CF3DEF2C46920EF74A971C6C7677F01633211930DEBCA2775141BB7",
+  "condition_rows": 518400,
+  "represented_evaluations": 171694080000,
+  "represented_frame_decisions": 13735526400000,
+  "key_result": "Excitation-aware state estimation is the best non-oracle protocol in the deterministic full-scale benchmark; oracle remains best overall.",
+  "protocol_utilities": {
+    "constant": -0.395697,
+    "ema_tactile": -0.187125,
+    "friction_proxy": -0.075469,
+    "old_latent": -0.001522,
+    "excitation_aware": 0.737596,
+    "oracle": 1.0,
+    "raw_tactile": -0.236893,
+    "threshold": -0.310114
+  },
+  "visual_qa_pages": [1, 5, 7, 15, 20, 25],
+  "limitations": [
+    "deterministic benchmark",
+    "no real tactile logs",
+    "no hardware deployment safety claim"
+  ]
 }

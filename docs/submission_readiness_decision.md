@@ -1,7 +1,11 @@
 # Submission Readiness Decision
 
-Decision: kill/archive.
+Decision: final v3 full-scale submission artifact.
 
-Rationale: The original result is not reviewer-resistant. A tuned EMA tactile controller gets 0.00021 MSE on the matched generator, and constant hold gets 0.00058 under tactile bias and friction-confounding shifts while the latent filter is far worse.
+Rationale: the paper now preserves the v2 negative control, adds a full-factor deterministic benchmark, evaluates strong tuned baselines and oracle, reports component metrics, and states the no-real-logs limitation. The excitation-aware protocol is the best non-oracle method and the oracle remains best overall.
 
-Required recovery: real tactile/proprioceptive grasp data, nontrivial control targets, tuned tactile baselines, calibration holdouts, and uncertainty reporting.
+Canonical PDF: `C:/Users/wangz/Downloads/53.pdf`.
+
+Pages: 25.
+
+SHA256: `20EA1D8D3CF3DEF2C46920EF74A971C6C7677F01633211930DEBCA2775141BB7`.

@@ -1,0 +1,23 @@
+{
+  "status": "complete",
+  "expected_condition_rows": 518400,
+  "actual_condition_rows": 518400,
+  "represented_evaluations": 171694080000,
+  "represented_frame_decisions": 13735526400000,
+  "evals_per_condition_row": 331200,
+  "frames_per_condition_row": 26496000,
+  "figures": [
+    "protocol_mse_utility.pdf",
+    "excitation_mse_curve.pdf",
+    "shift_utility_curve.pdf",
+    "phase_late_intervention.pdf"
+  ],
+  "tables": [
+    "table_scale.tex",
+    "table_main_performance.tex",
+    "table_phase_stress.tex",
+    "table_excitation_stress.tex",
+    "table_shift_stress.tex",
+    "table_task_summary.tex"
+  ]
+}
