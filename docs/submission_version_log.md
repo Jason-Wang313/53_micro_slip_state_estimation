@@ -18,4 +18,5 @@
 - Evaluated 8 protocols across task, object, sensor, phase, excitation, and shift factors.
 - Rewrote the manuscript as "Excitation-Aware Micro-Slip State Estimation for Dexterous Manipulation".
 - Built the final 25-page canonical PDF at `C:/Users/wangz/Downloads/53.pdf`.
-- Final SHA256: `20EA1D8D3CF3DEF2C46920EF74A971C6C7677F01633211930DEBCA2775141BB7`.
+- Final SHA256: `40503C6A9BED8CB6CB5195894BD98DD61F784F26B8DE28B36309AC7613AC1B1F`.
+- VLA-style highlight hardening verified 9 red link boxes on pages 3, 4, and 10.

@@ -34,7 +34,7 @@ The final paper keeps this collapse and makes it the reason for the v3 excitatio
 - Canonical PDF: `C:/Users/wangz/Downloads/53.pdf`.
 - Canonical PDF pages: 25.
 - Canonical PDF size: 313090 bytes.
-- Canonical PDF SHA256: `20EA1D8D3CF3DEF2C46920EF74A971C6C7677F01633211930DEBCA2775141BB7`.
+- Canonical PDF SHA256: `40503C6A9BED8CB6CB5195894BD98DD61F784F26B8DE28B36309AC7613AC1B1F`.
 - Local generated PDF policy: `paper/main.pdf` is ignored and removed after build.
 - Desktop copy: absent.
 
@@ -42,4 +42,6 @@ The final paper keeps this collapse and makes it the reason for the v3 excitatio
 
 - LaTeX warning scan: clean.
 - Visual QA pages: 1, 5, 7, 15, 20, and 25.
+- VLA-style highlight hardening: 9 red link boxes on pages 3, 4, and 10, all with border `(0, 0, 1)`.
+- Highlight visual QA pages: 3, 4, and 10.
 - Long method-name spacing was fixed with `xspace` before final hash recording.
