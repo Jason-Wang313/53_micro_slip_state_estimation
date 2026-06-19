@@ -22,4 +22,4 @@ Final result: passed. Excitation-aware utility is 0.737596; old latent utility i
 
 ## Attack: page-count and artifact readiness
 
-Final result: passed. Canonical PDF has 25 pages and SHA256 `20EA1D8D3CF3DEF2C46920EF74A971C6C7677F01633211930DEBCA2775141BB7`.
+Final result: passed. Canonical PDF has 25 pages and SHA256 `40503C6A9BED8CB6CB5195894BD98DD61F784F26B8DE28B36309AC7613AC1B1F`. VLA-style highlight hardening verified 9 red link boxes on pages 3, 4, and 10.

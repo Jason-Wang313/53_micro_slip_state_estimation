@@ -8,4 +8,6 @@ Canonical PDF: `C:/Users/wangz/Downloads/53.pdf`.
 
 Pages: 25.
 
-SHA256: `20EA1D8D3CF3DEF2C46920EF74A971C6C7677F01633211930DEBCA2775141BB7`.
+SHA256: `40503C6A9BED8CB6CB5195894BD98DD61F784F26B8DE28B36309AC7613AC1B1F`.
+
+VLA-style highlight hardening: 9 red link boxes on pages 3, 4, and 10, all with border `(0, 0, 1)`.

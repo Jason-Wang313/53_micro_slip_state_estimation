@@ -4,7 +4,7 @@
   "canonical_pdf": "C:/Users/wangz/Downloads/53.pdf",
   "pages": 25,
   "pdf_size_bytes": 313090,
-  "sha256": "20EA1D8D3CF3DEF2C46920EF74A971C6C7677F01633211930DEBCA2775141BB7",
+  "sha256": "40503C6A9BED8CB6CB5195894BD98DD61F784F26B8DE28B36309AC7613AC1B1F",
   "condition_rows": 518400,
   "represented_evaluations": 171694080000,
   "represented_frame_decisions": 13735526400000,
@@ -20,6 +20,12 @@
     "threshold": -0.310114
   },
   "visual_qa_pages": [1, 5, 7, 15, 20, 25],
+  "vla_highlight_hardening": {
+    "link_pages": [3, 4, 10],
+    "red_link_boxes": 9,
+    "border": [0, 0, 1],
+    "visual_qa_pages": [3, 4, 10]
+  },
   "limitations": [
     "deterministic benchmark",
     "no real tactile logs",
